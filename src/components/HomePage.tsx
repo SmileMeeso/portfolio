@@ -63,6 +63,8 @@ interface Project {
   period: string;
   title: string;
   description: string;
+  problem?: string[];
+  impact?: string[];
   contributions: string[];
   techStack: string[];
   screenshots?: Screenshot[];
@@ -96,6 +98,15 @@ const companies: Company[] = [
         title: "물류 최적화 서비스 개발",
         description:
           "다양한 파라미터를 등록하고, 파라미터를 이용해 가장 효율적인 루트를 찾아 고객에게 보여주는 물류 최적화 시스템. Storybook으로 기존 컴포넌트 정리 및 디자인 시스템 적용, 테스트 자동화로 QA 시간을 대폭 단축했습니다.",
+        problem: [
+          "각 프로젝트 별로 다른 디자인을 사용하고 있어 컴포넌트 유지보수와 재사용이 어려웠습니다.",
+          "수동 QA 방식으로 인해 배포마다 많은 시간이 소요되어 개발 사이클이 느렸습니다.",
+        ],
+        impact: [
+          "Storybook 디자인 시스템 도입으로 컴포넌트 재사용률 향상 및 신규 개발자 온보딩 시간 단축",
+          "E2E·유닛 테스트 자동화로 배포 전 QA 시간 대폭 단축 → 릴리스 사이클 가속",
+          "위치 기반 경로 시각화 기능 납품으로 다수 풀필먼트 고객사 확보에 기여",
+        ],
         contributions: [
           "React + Next.js + TypeScript 기반 물류 최적화 UI 개발",
           "Storybook으로 기존 정리되지 않은 컴포넌트들을 정리하고 디자인 시스템 적용",
@@ -136,6 +147,15 @@ const companies: Company[] = [
         title: "위치 기반 무료 나눔 플랫폼",
         description:
           "위치 기반 중고 물품 무료 나눔 플랫폼. Leaflet 지도와 리스트를 연동해 주변 나눔 게시글을 탐색하고, Firebase Auth로 구글·애플·카카오 소셜 로그인을 지원합니다. Docker + k8s + GitHub Actions + ArgoCD로 전체 CI/CD 파이프라인을 개인이 직접 구성했습니다.",
+        problem: [
+          "기존 중고 나눔은 지역 커뮤니티나 오픈채팅에 분산되어 있어 주변 나눔 물품을 한눈에 확인하기 어려웠습니다.",
+          "풀스택 + CI/CD + 앱 출시까지 혼자 구성해본 경험을 쌓고 싶었습니다.",
+        ],
+        impact: [
+          "프론트엔드부터 백엔드·인프라·앱 스토어 출시까지 전체 개발 사이클을 혼자 완주하며 시스템 전반에 대한 이해도 대폭 향상",
+          "k8s + ArgoCD GitOps 파이프라인을 직접 구성하며 컨테이너 오케스트레이션과 CD 자동화 역량 확보",
+          "브랜치 전략 기반 Docker 이미지 태그 관리로 dev/prod 환경 분리 운영 경험",
+        ],
         contributions: [
           "Next.js + Recoil + Styled-components로 프론트엔드 개발",
           "Leaflet.js로 지도 기반 나눔 게시글 탐색 (지도 뷰 ↔ 리스트 뷰 연동)",
@@ -211,6 +231,11 @@ const companies: Company[] = [
         title: "내부 교육 플랫폼 디자인 시스템 개발",
         description:
           "SK 구성원들이 교육을 받고 자신의 스킬을 확인할 수 있는 서비스. 모노레포 환경에서 Next.js ➞ React 전환 작업을 담당하고, Storybook 기반 디자인 시스템을 구축했습니다.",
+        problem: ["불필요한 Next.js 의존성으로 빌드 복잡도가 높았습니다."],
+        impact: [
+          "Next.js → React 전환으로 빌드 복잡도 감소 및 모노레포 패키지 의존성 관리 역량 습득",
+          "Storybook 기반 디자인 시스템 구축 경험으로 컴포넌트 설계 원칙 정립",
+        ],
         contributions: [
           "모노레포 환경에서 Next.js ➞ React 전환 작업",
           "Storybook 기반 디자인 시스템 개발 및 공통 컴포넌트 구축",
@@ -227,13 +252,19 @@ const companies: Company[] = [
     projects: [
       {
         period: "2025.05 ~ 2025.06",
-        title: "사내 디자인 시스템 개발",
+        title: "사내 디자인 시스템 유지보수",
         description:
-          "SK 그룹사 사내 공통으로 사용할 디자인 시스템 개발. 유닛 테스트 포함 공통 컴포넌트를 개발하여 SK 그룹 사내 곳곳에서 사용 중입니다.",
+          "SK 하이닉스 사내 공통으로 사용할 디자인 시스템 개발. 유닛 테스트 포함 공통 컴포넌트를 개발하여 SK 하이닉스 사내 곳곳에서 사용 중입니다.",
+        problem: [
+          "컴포넌트 테스트 코드가 없어 수동 QA에 시간이 많이 걸렸습니다.",
+        ],
+        impact: [
+          "유닛 테스트 도입으로 수동 QA 없이 컴포넌트 안정성을 자동 검증하는 체계 마련",
+          "SK 그룹사 전체에 배포되는 라이브러리 품질 기준을 직접 설정하는 경험",
+        ],
         contributions: [
-          "TypeScript + Storybook 기반 디자인 시스템 설계 및 개발",
+          "TypeScript + Storybook 기반 디자인 시스템 유지보수",
           "공통 컴포넌트 개발 및 디자인 시스템 유닛 테스트 작성",
-          "SK 그룹사 사내 전체 적용",
         ],
         techStack: ["TypeScript", "Storybook"],
       },
@@ -250,6 +281,14 @@ const companies: Company[] = [
         title: "YoDa - 요기요 데이터 분석 포털",
         description:
           "요기요 임직원을 위한 데이터 분석 포털. 전국 가맹점을 지도 + 마커 클러스터링으로 탐색하고, 가맹점별 매출·주문·배달 통계를 차트로 제공합니다. 유저가 스스로 커스텀 가능한 대시보드가 특히 영업팀에서 호평을 받았습니다.",
+        problem: [
+          "영업팀, 데이터 분석가, 데이터 사이언티스트마다 보고 싶은 통계가 달라 매번 개발팀에 요청해야 했던 불편함이 있었습니다.",
+        ],
+        impact: [
+          "Drag & Drop 커스텀 대시보드로 영업팀이 직접 원하는 통계를 구성할 수 있게 되어 개발팀 요청 건수 감소",
+          "Leaflet 마커 클러스터링 도입으로 수만 개 가맹점 렌더링 성능 문제 해결",
+          "Storybook + GitHub Actions CI/CD 최초 도입으로 팀 내 개발 문화 개선에 기여",
+        ],
         contributions: [
           "Next.js + TypeScript + Webpack + MUI5 환경 구축, FE 전체 담당",
           "Storybook 도입 및 GitHub Actions CI / ArgoCD CD 파이프라인 구성",
@@ -285,6 +324,15 @@ const companies: Company[] = [
         title: "I.Log.Yo - 요기요 사용자 행동 로그 통합 관리",
         description:
           "요기요 서비스 전체 로그를 수집·정의·통계화하는 내부 플랫폼. 어떤 로그를 개발하면 되고, 누가 개발 중인지, 상태는 어떤지, 스펙은 어떤지를 통합 관리합니다. 편의 기능(JSON 파서 등)이 특히 개발자들에게 호평을 받았습니다.",
+        problem: [
+          "로그 정의서가 스프레드시트와 노션에 분산되어 어떤 로그가 개발 중인지, 담당자가 누구인지 파악하기 어려웠습니다.",
+          "로그 품질 관리를 위한 통합 플랫폼이 없어 팀 간 소통 비용이 컸습니다.",
+        ],
+        impact: [
+          "로그 정의·개발 상태·담당자를 한 곳에서 관리하게 되어 팀 간 소통 비용 감소 및 로그 품질 향상",
+          "JSON 파서 등 편의 기능이 개발자들에게 호평을 받아 실사용자 니즈 기반 UX 설계 역량 습득",
+          "Storybook 최초 도입 + CI/CD 구성으로 이후 YoDa 프로젝트의 개발 문화 기반 마련",
+        ],
         contributions: [
           "Next.js + TypeScript + Webpack + MUI5 환경 구축, FE 전체 담당",
           "Storybook 최초 도입 및 GitHub Actions CI / ArgoCD CD 파이프라인 구성",
@@ -332,6 +380,15 @@ const companies: Company[] = [
         title: "스마트올 중학 - AI 학습 플랫폼",
         description:
           "웅진씽크빅의 AI 학습 플랫폼 중학 버전. AI 문법 실력 진단, HLS 동영상 재생, RTSP 생중계(328명 동시 시청), 애플 펜슬 필기 기능을 제공합니다. 아이패드 버전은 런칭 후 완판될 정도로 성공적이었습니다.",
+        problem: [
+          "기존 코드가 네이티브 액티비티에 종속되어 웹뷰 단독 실행이 불가능했습니다.",
+          "서드파티 패키지 오류로 인한 메모리 누수가 발생해 앱이 점점 느려지고 크래시가 잦아지는 문제가 있었습니다.",
+        ],
+        impact: [
+          "네이티브 의존성 완전 제거로 웹뷰 독립 실행 가능 → 크로스 플랫폼 유지보수 비용 대폭 감소",
+          "크롬 DevTools 메모리 프로파일링으로 누수 원인 파악 및 제거 → 앱 안정성 확보, 아이패드 버전 완판에 기여",
+          "iOS·Android·Flutter 세 플랫폼 동시 대응 경험으로 WebView 통신 구조 이해도 심화",
+        ],
         contributions: [
           "React.js SPA 유지보수 및 업그레이드, TypeScript 전환 작업 담당",
           "기존 네이티브 액티비티 의존성 전부 제거 - 웹뷰 독립 구조로 리팩터링",
@@ -389,11 +446,18 @@ const companies: Company[] = [
         title: "스마트올 초등 - 이벤트 페이지 개발",
         description:
           "스마트올 초등 서비스의 이벤트 페이지 개발. three.js로 귀여운 캐릭터들을 사양이 좋지 않은 패드 기기에서도 좋은 성능으로 구현했습니다.",
+        problem: [
+          "이벤트 페이지에 3D 캐릭터를 표현하고 싶었지만, 학습기 사양이 낮아 일반적인 3D 렌더링 방식으로는 버벅임이 심해 사용자 경험이 떨어지는 문제가 있었습니다.",
+        ],
+        impact: [
+          "three.js 드로우콜 최소화·텍스처 압축 등 최적화 기법을 적용해 저사양 기기에서도 부드러운 3D 렌더링 구현",
+          "제약 조건이 명확한 환경에서 성능 중심 설계 사고방식 체득",
+        ],
         contributions: [
           "three.js를 사용하여 캐릭터 3D 렌더링 - 저사양 패드에서도 좋은 성능 유지",
-          "React.js + TypeScript + Webpack 환경에서 개발",
+          "js + Webpack 환경에서 개발",
         ],
-        techStack: ["React.js", "TypeScript", "Webpack", "three.js"],
+        techStack: ["Vanilla JS", "Webpack", "three.js"],
       },
     ],
   },
@@ -408,6 +472,14 @@ const companies: Company[] = [
         title: "유사투자자문업 관리 서비스",
         description:
           "회원 관리, 문자 발송(KT 크로샷 연동) 등의 기능을 갖춘 투자자문업 관리 플랫폼. React + MaterialUI + Laravel8로 FE/BE 전체를 개발했습니다.",
+        problem: [
+          "발주사에서 회원 관리, 문자 발송, 통계 확인을 각각 별도 도구로 처리해 업무 효율이 낮았습니다.",
+          "통합 관리 시스템이 없어 운영 담당자가 여러 곳을 오가며 작업해야 했습니다.",
+        ],
+        impact: [
+          "하나의 플랫폼으로 회원·문자·통계를 통합 관리해 운영 담당자의 업무 흐름 단순화",
+          "FE·BE·인프라(AWS) 전 영역을 혼자 담당하며 풀스택 개발 역량 기반 형성",
+        ],
         contributions: [
           "React.js + MaterialUI로 화면 개발 (회원 관리, 통계 차트)",
           "Chart.js로 유저 통계 시각화",
@@ -429,6 +501,10 @@ const companies: Company[] = [
         title: "유치원 일정관리 서비스",
         description:
           "유치원 선생님이 아이의 기기 NFC 태그로 구매 기능을 제공하고, 공지사항을 음성(STT)으로 남길 수 있는 서비스. FE/BE/iOS/Android 전체를 담당했습니다.",
+        impact: [
+          "NFC·WebRTC·TTS 등 다양한 하드웨어 연동 기술을 동시에 적용하며 디바이스 API 경험 폭 확장",
+          "FE·BE·iOS·Android 전 플랫폼을 단독 개발하며 소규모 팀에서의 빠른 프로토타이핑 역량 습득",
+        ],
         contributions: [
           "React.js + Bootstrap으로 모바일 기반 FE 개발",
           "D3.js로 NFC 사용량 시계열 차트 구현",
@@ -462,6 +538,10 @@ const companies: Company[] = [
         title: "반려동물 건강관리 서비스",
         description:
           "반려동물의 건강 수치를 기록하고, 시계열 차트로 확인하거나 일기 형식으로 볼 수 있는 앱. Firebase 소셜 로그인, In-App Purchase, 광고 연동 포함. iOS/Android 스토어 업로드 성공.",
+        impact: [
+          "iOS·Android 스토어 출시 성공으로 실 사용자에게 서비스를 배포하는 전 과정 경험",
+          "In-App Purchase·광고 연동 등 앱 수익화 구조를 직접 구현하며 비즈니스 맥락 이해도 향상",
+        ],
         contributions: [
           "React.js + PHP로 FE/BE 개발 전담",
           "Highcharts.js로 건강검사 수치 시계열 차트 구현",
@@ -485,6 +565,10 @@ const companies: Company[] = [
         title: "유방암 관리 어플리케이션",
         description:
           "유방암 관련 투약 기록과 차트 확인, 투약 알림을 제공하는 앱. 병원 의사의 의뢰로 시작된 프로젝트로 내부적으로 잘 활용 중. FE/BE/Android 전체 담당.",
+        impact: [
+          "의료 현장의 실사용자(환자·의사) 니즈를 직접 반영하며 도메인 중심 UX 설계 역량 습득",
+          "Android 알림 매니저 기반 복약 알림 구현으로 네이티브 API 활용 경험 확보",
+        ],
         contributions: [
           "React.js SPA + PHP7 REST API 개발",
           "Android broadcasting receiver + alarm manager 활용 투약 알림 구현",
@@ -497,6 +581,10 @@ const companies: Company[] = [
         title: "부동산 기계학습 및 통계 툴",
         description:
           "다양한 파라미터를 입력하면 기계학습을 실행하고 결과를 차트로 시각화하는 툴. 이 서비스로 구글 스타트업 지원 사업에 당선됐습니다.",
+        impact: [
+          "이 서비스로 구글 스타트업 지원 사업에 당선되며 제품의 시장 가치 검증",
+          "비개발자 친화적 ML 파라미터 UI 설계 경험으로 사용자 중심 인터페이스 설계 사고방식 습득",
+        ],
         contributions: [
           "Vanilla JS + HistoryAPI로 SPA 구성",
           "Highcharts.js로 기계학습 결과 차트 시각화",
@@ -509,6 +597,11 @@ const companies: Company[] = [
         title: "부동산 빅데이터 분석 서비스",
         description:
           "네이버 부동산·호갱노노와 유사한 부동산 빅데이터 서비스. 네이버 지도 위에 아파트·연립·오피스텔 데이터를 조건 필터링으로 표시하고, 기계학습 가격 예측 결과를 차트로 제공합니다. iOS/Android WebApp 포함.",
+        impact: [
+          "PostGIS 좌표 기반 클러스터링으로 수만 건 마커를 줌 레벨에 따라 자동 군집화, 지도 성능 문제 해결 경험 확보",
+          "iOS/Android WebApp 이중 배포 경험으로 하이브리드 앱 개발 플로우 전반 습득",
+          "결제·인증·게시판·스크래핑·푸시 알림까지 Full-stack 구현하며 서비스 단독 런칭 역량 체득",
+        ],
         contributions: [
           "Vanilla JS + HistoryAPI로 SPA 구성, jQuery + Webpack + Babel로 크로스 브라우징 대응",
           "NaverMaps API로 지도에 마커 표시, Highcharts.js로 막대·선 차트 시각화",
@@ -563,6 +656,13 @@ const companies: Company[] = [
         title: "11번가 사용자 행동 로그 수집 시스템",
         description:
           "11번가 서비스의 사용자 행동 로그를 수집·관리하는 내부 TF. 로그 정의 및 수집 파이프라인 관련 프론트엔드 개발을 담당했습니다.",
+        problem: [
+          "11번가 전반의 사용자 행동 로그가 분산 관리되어 어떤 로그가 정의됐는지, 개발 상태는 어떤지 파악하기 어려웠습니다.",
+        ],
+        impact: [
+          "대형 이커머스 플랫폼의 로그 수집 파이프라인 구조를 직접 경험하며 데이터 엔지니어링 관점의 시야 확장",
+          "TF 조직 내 다양한 직군과 협업하며 로그 정의·수집·관리 프로세스 전반 이해",
+        ],
         contributions: ["사용자 행동 로그 수집 관련 프론트엔드 화면 개발"],
         techStack: ["JavaScript"],
       },
@@ -997,35 +1097,163 @@ function ProjectItem({
               mt: `${tokens.spacing[10]}px`,
               display: "flex",
               flexDirection: "column",
-              gap: `${tokens.spacing[6]}px`,
+              gap: `${tokens.spacing[12]}px`,
             }}
           >
-            {project.contributions.map((item, i) => (
+            {project.problem && project.problem.length > 0 && (
               <Box
-                key={i}
-                sx={{ display: "flex", gap: `${tokens.spacing[8]}px` }}
+                sx={{
+                  bgcolor: t.accentOrangeLight,
+                  border: `1px solid ${t.accentOrange}40`,
+                  borderRadius: `${tokens.radius.md}px`,
+                  px: `${tokens.spacing[16]}px`,
+                  py: `${tokens.spacing[12]}px`,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: `${tokens.spacing[8]}px`,
+                }}
               >
-                <Box
-                  sx={{
-                    width: 5,
-                    height: 5,
-                    borderRadius: "50%",
-                    bgcolor: accentColor,
-                    flexShrink: 0,
-                    mt: "8px",
-                  }}
-                />
                 <Typography
                   sx={{
-                    fontSize: tokens.fontSize.sm,
-                    color: t.textSecondary,
-                    lineHeight: 1.7,
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: 700,
+                    color: t.accentOrange,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
                   }}
                 >
-                  {item}
+                  Problem
                 </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: `${tokens.spacing[6]}px`,
+                  }}
+                >
+                  {project.problem.map((item, i) => (
+                    <Box
+                      key={i}
+                      sx={{ display: "flex", gap: `${tokens.spacing[8]}px` }}
+                    >
+                      <Box
+                        sx={{
+                          width: 5,
+                          height: 5,
+                          borderRadius: "50%",
+                          bgcolor: t.accentOrange,
+                          flexShrink: 0,
+                          mt: "8px",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          fontSize: tokens.fontSize.sm,
+                          color: t.textSecondary,
+                          lineHeight: 1.75,
+                        }}
+                      >
+                        {item}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
               </Box>
-            ))}
+            )}
+            {project.impact && project.impact.length > 0 && (
+              <Box
+                sx={{
+                  bgcolor: t.accentGreenLight,
+                  border: `1px solid ${t.accentGreen}40`,
+                  borderRadius: `${tokens.radius.md}px`,
+                  px: `${tokens.spacing[16]}px`,
+                  py: `${tokens.spacing[12]}px`,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: `${tokens.spacing[8]}px`,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: 700,
+                    color: t.accentGreen,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  Impact &amp; Learning
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: `${tokens.spacing[6]}px`,
+                  }}
+                >
+                  {project.impact.map((item, i) => (
+                    <Box
+                      key={i}
+                      sx={{ display: "flex", gap: `${tokens.spacing[8]}px` }}
+                    >
+                      <Box
+                        sx={{
+                          width: 5,
+                          height: 5,
+                          borderRadius: "50%",
+                          bgcolor: t.accentGreen,
+                          flexShrink: 0,
+                          mt: "8px",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          fontSize: tokens.fontSize.sm,
+                          color: t.textSecondary,
+                          lineHeight: 1.75,
+                        }}
+                      >
+                        {item}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            )}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: `${tokens.spacing[6]}px`,
+              }}
+            >
+              {project.contributions.map((item, i) => (
+                <Box
+                  key={i}
+                  sx={{ display: "flex", gap: `${tokens.spacing[8]}px` }}
+                >
+                  <Box
+                    sx={{
+                      width: 5,
+                      height: 5,
+                      borderRadius: "50%",
+                      bgcolor: accentColor,
+                      flexShrink: 0,
+                      mt: "8px",
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontSize: tokens.fontSize.sm,
+                      color: t.textSecondary,
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    {item}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
           </Box>
         )}
       </Box>
