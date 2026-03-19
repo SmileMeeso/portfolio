@@ -1698,6 +1698,43 @@ export default function MiniCadPage() {
     syncPartStates();
   };
 
+  // ── 튜토리얼 ──
+  const helpTextRef = useRef<HTMLDivElement>(null);
+  const demoBtnRef = useRef<HTMLDivElement>(null);
+  const blueprintTabRef = useRef<HTMLDivElement>(null);
+
+  const [tutorialStep, setTutorialStep] = useState(1); // 0=숨김, 1~3
+  const [spotlightRect, setSpotlightRect] = useState<DOMRect | null>(null);
+
+  const TUTORIAL_MSGS: Record<number, string> = {
+    1: "이렇게 조작할 수 있어요!",
+    2: "귀찮으시면 데모를 이용할 수 있어요!",
+    3: "부품의 설계도를 확인할 수 있어요!",
+  };
+
+  const handleTutorialNext = useCallback(() => {
+    setTutorialStep((s) => (s >= 3 ? 0 : s + 1));
+  }, []);
+
+  useEffect(() => {
+    if (tutorialStep === 0) {
+      setSpotlightRect(null);
+      return;
+    }
+    const refMap: Record<number, React.RefObject<HTMLDivElement | null>> = {
+      1: helpTextRef,
+      2: demoBtnRef,
+      3: blueprintTabRef,
+    };
+    const ref = refMap[tutorialStep];
+    const update = () => {
+      if (ref?.current) setSpotlightRect(ref.current.getBoundingClientRect());
+    };
+    requestAnimationFrame(update);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [tutorialStep]);
+
   return (
     <Box
       sx={{
@@ -1738,6 +1775,7 @@ export default function MiniCadPage() {
         {(["parts", "assembly", "blueprint"] as Mode[]).map((m) => (
           <Box
             key={m}
+            ref={m === "blueprint" ? blueprintTabRef : undefined}
             onClick={() => setMode(m)}
             sx={{
               px: `${tokens.spacing[12]}px`,
@@ -1941,6 +1979,7 @@ export default function MiniCadPage() {
           )}
           {/* 도움말 */}
           <Box
+            ref={helpTextRef}
             sx={{
               position: "absolute",
               top: 12,
@@ -1966,8 +2005,35 @@ export default function MiniCadPage() {
             </Typography>
           </Box>
 
+          {/* 도움말 버튼 */}
+          <Box
+            onClick={() => setTutorialStep(1)}
+            sx={{
+              position: "absolute",
+              top: 68,
+              left: 12,
+              zIndex: 10,
+              width: 26,
+              height: 26,
+              borderRadius: "50%",
+              bgcolor: isDark ? "rgba(15,23,42,0.72)" : "rgba(255,255,255,0.72)",
+              backdropFilter: "blur(6px)",
+              border: `1px solid ${t.borderDefault}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              "&:hover": { bgcolor: isDark ? "rgba(59,130,246,0.2)" : "rgba(59,130,246,0.1)", borderColor: "#3B82F6" },
+            }}
+          >
+            <Typography sx={{ fontSize: 13, fontWeight: 700, color: t.textTertiary, lineHeight: 1 }}>
+              ?
+            </Typography>
+          </Box>
+
           {/* 데모 / 리셋 버튼 */}
           <Box
+            ref={demoBtnRef}
             sx={{
               position: "absolute",
               top: 12,
@@ -2235,6 +2301,155 @@ export default function MiniCadPage() {
       {mode === "blueprint" && (
         <Box sx={{ flex: 1 }}>
           <BlueprintView partStates={partStates} isDark={isDark} />
+        </Box>
+      )}
+
+      {/* ── 튜토리얼 오버레이 ── */}
+      {tutorialStep > 0 && (
+        <Box
+          onClick={handleTutorialNext}
+          sx={{ position: "fixed", inset: 0, zIndex: 400, cursor: "pointer" }}
+        >
+          {spotlightRect ? (
+            (() => {
+              const pad = 10;
+              const { top, left, right, bottom } = spotlightRect;
+              const sl = left - pad,
+                st = top - pad,
+                sr = right + pad,
+                sb = bottom + pad;
+              const vw = window.innerWidth;
+              const vh = window.innerHeight;
+              const dimBg = "rgba(0,0,0,0.78)";
+              const cardCenterX = Math.min(
+                Math.max((sl + sr) / 2, 160),
+                vw - 160,
+              );
+              return (
+                <>
+                  {/* 4방향 딤 */}
+                  <Box
+                    sx={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: vw,
+                      height: st,
+                      bgcolor: dimBg,
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      position: "fixed",
+                      top: sb,
+                      left: 0,
+                      width: vw,
+                      height: vh - sb,
+                      bgcolor: dimBg,
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      position: "fixed",
+                      top: st,
+                      left: 0,
+                      width: sl,
+                      height: sb - st,
+                      bgcolor: dimBg,
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      position: "fixed",
+                      top: st,
+                      left: sr,
+                      width: vw - sr,
+                      height: sb - st,
+                      bgcolor: dimBg,
+                    }}
+                  />
+                  {/* 하이라이트 테두리 */}
+                  <Box
+                    sx={{
+                      position: "fixed",
+                      top: st,
+                      left: sl,
+                      width: sr - sl,
+                      height: sb - st,
+                      border: "2px solid #3B82F6",
+                      borderRadius: "10px",
+                      boxShadow:
+                        "0 0 0 4px rgba(59,130,246,0.25), 0 0 24px rgba(59,130,246,0.4)",
+                      pointerEvents: "none",
+                    }}
+                  />
+                  {/* 설명 텍스트 */}
+                  <Typography
+                    sx={{
+                      position: "fixed",
+                      top: sb + 18,
+                      left: cardCenterX,
+                      transform: "translateX(-50%)",
+                      fontSize: 18,
+                      fontWeight: 700,
+                      color: "#FFFFFF",
+                      textShadow: "0 2px 12px rgba(0,0,0,0.7)",
+                      pointerEvents: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {TUTORIAL_MSGS[tutorialStep]}
+                  </Typography>
+                </>
+              );
+            })()
+          ) : (
+            <Box
+              sx={{ position: "fixed", inset: 0, bgcolor: "rgba(0,0,0,0.78)" }}
+            />
+          )}
+
+          {/* 하단 진행 표시 */}
+          <Box
+            sx={{
+              position: "fixed",
+              bottom: 36,
+              left: "50%",
+              transform: "translateX(-50%)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
+              pointerEvents: "none",
+            }}
+          >
+            <Box sx={{ display: "flex", gap: "6px" }}>
+              {[1, 2, 3].map((s) => (
+                <Box
+                  key={s}
+                  sx={{
+                    width: s === tutorialStep ? 22 : 6,
+                    height: 6,
+                    borderRadius: 3,
+                    bgcolor:
+                      s === tutorialStep
+                        ? "#3B82F6"
+                        : "rgba(255,255,255,0.35)",
+                    transition: "width 0.2s ease",
+                  }}
+                />
+              ))}
+            </Box>
+            <Typography
+              sx={{
+                fontSize: 13,
+                color: "rgba(255,255,255,0.8)",
+                fontWeight: 500,
+              }}
+            >
+              {tutorialStep < 3 ? "클릭하여 다음 설명 보기" : "클릭하여 시작하기"}
+            </Typography>
+          </Box>
         </Box>
       )}
     </Box>
