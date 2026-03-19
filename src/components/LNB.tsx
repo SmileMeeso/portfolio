@@ -6,6 +6,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import TuneIcon from "@mui/icons-material/Tune";
 import LayersIcon from "@mui/icons-material/Layers";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
+import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -135,6 +136,15 @@ export default function LNB({ open, onClose }: LNBProps) {
             label="이미지 최적화"
             active={currentPath === "/image-optimize"}
             onClick={() => handleNavigate("/image-optimize")}
+            t={t}
+          />
+
+          {/* 미니 캐드 */}
+          <MenuItem
+            icon={<SquareFootIcon sx={{ fontSize: 20, color: t.textSecondary }} />}
+            label="미니 캐드"
+            active={currentPath === "/cad"}
+            onClick={() => handleNavigate("/cad")}
             t={t}
           />
 

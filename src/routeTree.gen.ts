@@ -14,6 +14,7 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ImageOptimizeRouteImport } from './routes/image-optimize'
 import { Route as ImageFilterRouteImport } from './routes/image-filter'
+import { Route as CadRouteImport } from './routes/cad'
 import { Route as A11yRouteImport } from './routes/a11y'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RenderingIndexRouteImport } from './routes/rendering/index'
@@ -47,6 +48,11 @@ const ImageOptimizeRoute = ImageOptimizeRouteImport.update({
 const ImageFilterRoute = ImageFilterRouteImport.update({
   id: '/image-filter',
   path: '/image-filter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadRoute = CadRouteImport.update({
+  id: '/cad',
+  path: '/cad',
   getParentRoute: () => rootRouteImport,
 } as any)
 const A11yRoute = A11yRouteImport.update({
@@ -98,6 +104,7 @@ const A11yKeyboardRoute = A11yKeyboardRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a11y': typeof A11yRouteWithChildren
+  '/cad': typeof CadRoute
   '/image-filter': typeof ImageFilterRoute
   '/image-optimize': typeof ImageOptimizeRoute
   '/profile': typeof ProfileRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a11y': typeof A11yRouteWithChildren
+  '/cad': typeof CadRoute
   '/image-filter': typeof ImageFilterRoute
   '/image-optimize': typeof ImageOptimizeRoute
   '/profile': typeof ProfileRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a11y': typeof A11yRouteWithChildren
+  '/cad': typeof CadRoute
   '/image-filter': typeof ImageFilterRoute
   '/image-optimize': typeof ImageOptimizeRoute
   '/profile': typeof ProfileRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/a11y'
+    | '/cad'
     | '/image-filter'
     | '/image-optimize'
     | '/profile'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/a11y'
+    | '/cad'
     | '/image-filter'
     | '/image-optimize'
     | '/profile'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/a11y'
+    | '/cad'
     | '/image-filter'
     | '/image-optimize'
     | '/profile'
@@ -196,6 +208,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   A11yRoute: typeof A11yRouteWithChildren
+  CadRoute: typeof CadRoute
   ImageFilterRoute: typeof ImageFilterRoute
   ImageOptimizeRoute: typeof ImageOptimizeRoute
   ProfileRoute: typeof ProfileRoute
@@ -238,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/image-filter'
       fullPath: '/image-filter'
       preLoaderRoute: typeof ImageFilterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cad': {
+      id: '/cad'
+      path: '/cad'
+      fullPath: '/cad'
+      preLoaderRoute: typeof CadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/a11y': {
@@ -341,6 +361,7 @@ const RenderingRouteWithChildren = RenderingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   A11yRoute: A11yRouteWithChildren,
+  CadRoute: CadRoute,
   ImageFilterRoute: ImageFilterRoute,
   ImageOptimizeRoute: ImageOptimizeRoute,
   ProfileRoute: ProfileRoute,
