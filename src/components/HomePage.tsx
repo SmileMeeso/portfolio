@@ -3,9 +3,7 @@ import { Box, Typography, Chip, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
-import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import SchoolIcon from "@mui/icons-material/School";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import GroupIcon from "@mui/icons-material/Group";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -1260,18 +1258,10 @@ export default function HomePage() {
               label: "m950827@naver.com",
             },
             {
-              icon: <PhoneIcon sx={{ fontSize: 16, color: t.accentPurple }} />,
-              label: "010-4810-9869",
-            },
-            {
               icon: (
                 <LocationOnIcon sx={{ fontSize: 16, color: t.accentPurple }} />
               ),
               label: "경기도 성남시 분당구 정자동",
-            },
-            {
-              icon: <SchoolIcon sx={{ fontSize: 16, color: t.accentPurple }} />,
-              label: "명지대학교 기계공학과 졸업",
             },
           ].map(({ icon, label }) => (
             <Box
