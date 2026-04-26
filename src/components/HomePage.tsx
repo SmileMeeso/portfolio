@@ -1173,9 +1173,19 @@ function CompanyCard({ company, t }: { company: Company; t: TokensColor }) {
 
 //  메인 홈 페이지
 
+function calcCareer(startYear: number, startMonth: number): string {
+  const now = new Date();
+  const totalMonths = (now.getFullYear() - startYear) * 12 + (now.getMonth() + 1 - startMonth);
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  return months > 0 ? `${years}년 ${months}개월` : `${years}년`;
+}
+
 export default function HomePage() {
   const theme = useTheme();
   const t = theme.palette.tokens.color;
+  const careerDuration = calcCareer(2017, 6);
+  const careerYears = Math.floor(((new Date().getFullYear() - 2017) * 12 + (new Date().getMonth() + 1 - 6)) / 12);
 
   return (
     <Box sx={{ bgcolor: t.bgSurface, minHeight: "calc(100vh - 64px)" }}>
@@ -1234,7 +1244,7 @@ export default function HomePage() {
           <Typography
             sx={{ fontSize: tokens.fontSize.md, color: t.textSecondary }}
           >
-            Frontend Developer · 총 8년 2개월 경력
+            {`Frontend Developer · 총 ${careerDuration} 경력`}
           </Typography>
         </Box>
 
@@ -1290,7 +1300,7 @@ export default function HomePage() {
           >
             {`"코드 한 줄이 제품이 되는 전 과정을 압니다"
 
-저는 8년간 프론트엔드를 중심으로 백엔드, 앱, 인프라까지 두루 경험해 온 개발자입니다. 인력이 부족한 환경에서 혼자 풀스택 개발을 맡은 경험이 많았고, 덕분에 어떤 포지션의 동료와도 자연스럽게 소통할 수 있는 넓은 시야를 갖게 됐습니다.
+저는 ${careerYears}년간 프론트엔드를 중심으로 백엔드, 앱, 인프라까지 두루 경험해 온 개발자입니다. 인력이 부족한 환경에서 혼자 풀스택 개발을 맡은 경험이 많았고, 덕분에 어떤 포지션의 동료와도 자연스럽게 소통할 수 있는 넓은 시야를 갖게 됐습니다.
 
 제품 품질에 집착합니다.
 웅진씽크빅 재직 당시, 낮은 사양의 패드에서 메모리 누수로 앱이 점점 느려지는 문제를 크롬 DevTools 메모리 프로파일링으로 직접 파악하고 제거했습니다. 그 결과 아이패드 버전 런칭 후 완판이라는 성과로 이어졌습니다. 또한 초기 로딩 속도를 8s에서 0.7s로 91% 단축했습니다. 요기요(위대한상상)에서는 수만 개의 가맹점 마커 렌더링 성능 문제를 Leaflet 마커 클러스터링으로 해결했고, 영업팀이 직접 원하는 통계를 구성할 수 있는 Drag & Drop 커스텀 대시보드를 만들어 개발팀으로의 반복 요청을 줄였습니다.
@@ -1456,7 +1466,7 @@ Storybook을 팀에 처음 도입하고, GitHub Actions + ArgoCD 기반 CI/CD �
           <Typography
             sx={{ fontSize: tokens.fontSize.sm, color: t.textTertiary }}
           >
-            총 경력 8년 2개월 · 최신순
+            {`총 경력 ${careerDuration} · 최신순`}
           </Typography>
         </Box>
 
