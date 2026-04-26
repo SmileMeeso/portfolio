@@ -72,12 +72,21 @@ export function computeEdges(part: CadPart): EdgeInfo[] {
         return Math.hypot(hc.cx - c.cx, hc.cy - c.cy) + hc.r <= c.r + 0.1;
       }) ||
       extrude.loops.some((loop) => {
-        const pts = loop.map((pid) => pm.get(pid)).filter(Boolean) as { x: number; y: number }[];
+        const pts = loop.map((pid) => pm.get(pid)).filter(Boolean) as {
+          x: number;
+          y: number;
+        }[];
         if (pts.length < 3) return false;
         let inside = false;
         for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
-          const xi = pts[i].x, yi = pts[i].y, xj = pts[j].x, yj = pts[j].y;
-          if ((yi > hc.cy) !== (yj > hc.cy) && hc.cx < ((xj - xi) * (hc.cy - yi)) / (yj - yi) + xi)
+          const xi = pts[i].x,
+            yi = pts[i].y,
+            xj = pts[j].x,
+            yj = pts[j].y;
+          if (
+            yi > hc.cy !== yj > hc.cy &&
+            hc.cx < ((xj - xi) * (hc.cy - yi)) / (yj - yi) + xi
+          )
             inside = !inside;
         }
         return inside;
@@ -169,12 +178,21 @@ export function buildPartObj(inst: PlacedInstance, part: CadPart): PartObj {
           return Math.hypot(hc.cx - c.cx, hc.cy - c.cy) + hc.r <= c.r + 0.1;
         }) ||
         extrude.loops.some((loop) => {
-          const pts = loop.map((pid) => pm.get(pid)).filter(Boolean) as { x: number; y: number }[];
+          const pts = loop.map((pid) => pm.get(pid)).filter(Boolean) as {
+            x: number;
+            y: number;
+          }[];
           if (pts.length < 3) return false;
           let inside = false;
           for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
-            const xi = pts[i].x, yi = pts[i].y, xj = pts[j].x, yj = pts[j].y;
-            if ((yi > hc.cy) !== (yj > hc.cy) && hc.cx < ((xj - xi) * (hc.cy - yi)) / (yj - yi) + xi)
+            const xi = pts[i].x,
+              yi = pts[i].y,
+              xj = pts[j].x,
+              yj = pts[j].y;
+            if (
+              yi > hc.cy !== yj > hc.cy &&
+              hc.cx < ((xj - xi) * (hc.cy - yi)) / (yj - yi) + xi
+            )
               inside = !inside;
           }
           return inside;
@@ -536,7 +554,10 @@ export interface SceneAPI {
     bEdgeId: string,
   ) => boolean;
   clearSelection: () => void;
-  setCameraPosition: (pos: [number, number, number], target: [number, number, number]) => void;
+  setCameraPosition: (
+    pos: [number, number, number],
+    target: [number, number, number],
+  ) => void;
 }
 
 function fitCameraToScene(st: SceneState) {
@@ -651,7 +672,7 @@ export function makeSceneAPI(st: SceneState): SceneAPI {
       if (aEdge.kind !== bEdge.kind)
         return {
           success: false,
-          error: `형태 불일치 (${aEdge.kind === 'circle' ? '원형' : '직선'} ↔ ${bEdge.kind === 'circle' ? '원형' : '직선'})`,
+          error: `형태 불일치 (${aEdge.kind === "circle" ? "원형" : "직선"} ↔ ${bEdge.kind === "circle" ? "원형" : "직선"})`,
         };
       if (Math.abs(aEdge.metric - bEdge.metric) > 1)
         return {
@@ -675,7 +696,11 @@ export function makeSceneAPI(st: SceneState): SceneAPI {
       );
       bObj.group.rotation.x = 0;
 
-      const moverPos = bObj.group.position.toArray() as [number, number, number];
+      const moverPos = bObj.group.position.toArray() as [
+        number,
+        number,
+        number,
+      ];
       st.assembledEdges.add(`${aInstId}:${aEdgeId}`);
       st.assembledEdges.add(`${bInstId}:${bEdgeId}`);
       st.selectedEdges = [];
@@ -719,7 +744,9 @@ export function makeSceneAPI(st: SceneState): SceneAPI {
       const aEdge = aObj.edges.find((e) => e.id === aEdgeId);
       const bEdge = bObj.edges.find((e) => e.id === bEdgeId);
       if (!aEdge || !bEdge) return false;
-      return aEdge.kind === bEdge.kind && Math.abs(aEdge.metric - bEdge.metric) <= 1;
+      return (
+        aEdge.kind === bEdge.kind && Math.abs(aEdge.metric - bEdge.metric) <= 1
+      );
     },
 
     clearSelection() {
@@ -736,7 +763,10 @@ export function makeSceneAPI(st: SceneState): SceneAPI {
       const t0 = performance.now();
       const tick = () => {
         const elapsed = Math.min((performance.now() - t0) / dur, 1);
-        const e = elapsed < 0.5 ? 2 * elapsed * elapsed : -1 + (4 - 2 * elapsed) * elapsed;
+        const e =
+          elapsed < 0.5
+            ? 2 * elapsed * elapsed
+            : -1 + (4 - 2 * elapsed) * elapsed;
         st.camera.position.lerpVectors(from, to, e);
         st.controls.target.lerpVectors(fromT, toT, e);
         st.controls.update();
