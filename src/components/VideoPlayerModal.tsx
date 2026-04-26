@@ -31,10 +31,10 @@ export default function VideoPlayerModal({
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [duration, setDuration] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [controlsVisible, setControlsVisible] = useState(true);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // rAF loop: updates track fill + thumb + time display every frame
   const startRaf = useCallback(() => {
     const tick = () => {
       const v = videoRef.current;
@@ -55,6 +55,7 @@ export default function VideoPlayerModal({
   useEffect(() => {
     if (!open) { stopRaf(); return; }
     setPlaying(false);
+    setLoading(true);
     setControlsVisible(true);
     return () => {
       stopRaf();
@@ -71,8 +72,7 @@ export default function VideoPlayerModal({
   const togglePlay = () => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) { v.play(); }
-    else { v.pause(); }
+    if (v.paused) v.play(); else v.pause();
     resetHideTimer();
   };
 
@@ -89,7 +89,6 @@ export default function VideoPlayerModal({
     resetHideTimer();
   };
 
-  // Seek by clicking on the track bar
   const handleTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const v = videoRef.current;
     const bar = e.currentTarget;
@@ -107,9 +106,8 @@ export default function VideoPlayerModal({
         onMouseMove={resetHideTimer}
         sx={{
           position: "fixed", inset: 0,
-          bgcolor: "rgba(0,0,0,0.92)",
+          bgcolor: "#000",
           display: "flex", alignItems: "center", justifyContent: "center",
-          p: "24px",
         }}
       >
         {/* 닫기 */}
@@ -127,17 +125,38 @@ export default function VideoPlayerModal({
           <CloseIcon sx={{ color: "#fff", fontSize: 18 }} />
         </Box>
 
+        {/* 피젯 스피너 — 로딩 중에만 표시 */}
+        {loading && (
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              zIndex: 5, pointerEvents: "none",
+            }}
+          >
+            <Box
+              sx={{
+                width: 48, height: 48,
+                borderRadius: "50%",
+                border: "4px solid rgba(255,255,255,0.15)",
+                borderTopColor: "#fff",
+                animation: "spin 0.8s linear infinite",
+                "@keyframes spin": { to: { transform: "rotate(360deg)" } },
+              }}
+            />
+          </Box>
+        )}
+
         {/* 비디오 + 컨트롤 */}
         <Box
           onClick={(e) => e.stopPropagation()}
           sx={{
             position: "relative",
-            maxWidth: "calc(100vw - 80px)",
-            maxHeight: "calc(100vh - 80px)",
+            width: "100%",
+            height: "100%",
             display: "flex",
-            borderRadius: "10px",
-            overflow: "hidden",
-            bgcolor: "#000",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           {open && (
@@ -146,14 +165,21 @@ export default function VideoPlayerModal({
               src={src}
               autoPlay
               onClick={togglePlay}
-              onLoadedMetadata={() => setDuration(videoRef.current?.duration ?? 0)}
+              onLoadedMetadata={() => {
+                setDuration(videoRef.current?.duration ?? 0);
+                setLoading(false);
+              }}
+              onCanPlay={() => setLoading(false)}
+              onWaiting={() => setLoading(true)}
+              onPlaying={() => setLoading(false)}
               onPlay={() => { setPlaying(true); startRaf(); resetHideTimer(); }}
               onPause={() => { setPlaying(false); stopRaf(); }}
               onEnded={() => { setPlaying(false); stopRaf(); }}
               style={{
                 display: "block",
-                maxWidth: "100%",
-                maxHeight: "calc(100vh - 80px)",
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
                 cursor: "pointer",
                 outline: "none",
               }}
@@ -164,66 +190,37 @@ export default function VideoPlayerModal({
           <Box
             sx={{
               position: "absolute", bottom: 0, left: 0, right: 0,
-              px: "12px", pt: "20px", pb: "8px",
-              background: "linear-gradient(transparent, rgba(0,0,0,0.45))",
+              px: "12px", pt: "20px", pb: "10px",
+              background: "linear-gradient(transparent, rgba(0,0,0,0.55))",
               display: "flex", flexDirection: "column", gap: "4px",
               opacity: controlsVisible ? 1 : 0,
               transition: "opacity 0.3s",
               pointerEvents: controlsVisible ? "auto" : "none",
             }}
           >
-            {/* 시크 바 — DOM 직접 조작, transition 없음 */}
+            {/* 시크 바 */}
             <Box
               onClick={handleTrackClick}
-              sx={{
-                position: "relative",
-                width: "100%",
-                height: 14,
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
+              sx={{ position: "relative", width: "100%", height: 14, display: "flex", alignItems: "center", cursor: "pointer" }}
             >
-              {/* 레일 */}
               <Box sx={{ position: "absolute", left: 0, right: 0, height: 3, borderRadius: 2, bgcolor: "rgba(255,255,255,0.25)" }} />
-              {/* 진행 채움 */}
-              <Box
-                ref={trackRef}
-                sx={{ position: "absolute", left: 0, width: "0%", height: 3, borderRadius: 2, bgcolor: "#fff", pointerEvents: "none" }}
-              />
-              {/* 썸 */}
+              <Box ref={trackRef} sx={{ position: "absolute", left: 0, width: "0%", height: 3, borderRadius: 2, bgcolor: "#fff", pointerEvents: "none" }} />
               <Box
                 ref={thumbRef}
-                sx={{
-                  position: "absolute",
-                  left: "0%",
-                  transform: "translateX(-50%)",
-                  width: 10, height: 10,
-                  borderRadius: "50%",
-                  bgcolor: "#fff",
-                  pointerEvents: "none",
-                }}
+                sx={{ position: "absolute", left: "0%", transform: "translateX(-50%)", width: 10, height: 10, borderRadius: "50%", bgcolor: "#fff", pointerEvents: "none" }}
               />
             </Box>
 
             {/* 버튼 행 */}
             <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
               <Box onClick={togglePlay} sx={{ cursor: "pointer", display: "flex", p: "4px", borderRadius: "50%", "&:hover": { bgcolor: "rgba(255,255,255,0.12)" } }}>
-                {playing
-                  ? <PauseIcon sx={{ color: "#fff", fontSize: 18 }} />
-                  : <PlayArrowIcon sx={{ color: "#fff", fontSize: 18 }} />}
+                {playing ? <PauseIcon sx={{ color: "#fff", fontSize: 18 }} /> : <PlayArrowIcon sx={{ color: "#fff", fontSize: 18 }} />}
               </Box>
               <Box onClick={toggleMute} sx={{ cursor: "pointer", display: "flex", p: "4px", borderRadius: "50%", "&:hover": { bgcolor: "rgba(255,255,255,0.12)" } }}>
-                {muted
-                  ? <VolumeOffIcon sx={{ color: "#fff", fontSize: 16 }} />
-                  : <VolumeUpIcon sx={{ color: "#fff", fontSize: 16 }} />}
+                {muted ? <VolumeOffIcon sx={{ color: "#fff", fontSize: 16 }} /> : <VolumeUpIcon sx={{ color: "#fff", fontSize: 16 }} />}
               </Box>
               <Box sx={{ flex: 1 }} />
-              <Box
-                component="span"
-                ref={timeRef}
-                sx={{ color: "rgba(255,255,255,0.65)", fontSize: 11, lineHeight: 1, fontFamily: "monospace" }}
-              >
+              <Box component="span" ref={timeRef} sx={{ color: "rgba(255,255,255,0.65)", fontSize: 11, lineHeight: 1, fontFamily: "monospace" }}>
                 {`0:00 / ${fmt(duration)}`}
               </Box>
               <Box onClick={handleFullscreen} sx={{ cursor: "pointer", display: "flex", p: "4px", borderRadius: "50%", "&:hover": { bgcolor: "rgba(255,255,255,0.12)" } }}>
