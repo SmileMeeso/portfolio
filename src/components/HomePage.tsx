@@ -13,6 +13,8 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import MemoryIcon from "@mui/icons-material/Memory";
+import { Link } from "@tanstack/react-router";
 import VideoPlayerModal from "./VideoPlayerModal";
 import { tokens } from "../theme/theme";
 import type { TokensColor } from "../theme/theme";
@@ -162,90 +164,64 @@ const companies: Company[] = [
     ],
   },
   {
-    period: "2025.08 ~ 2025.09",
-    name: "첫눈소프트 (SK AX 파견)",
-    department: "내부 CMS 유지보수",
+    period: "2025.01 ~ 2025.09",
+    name: "프리랜서 / 개인 프로젝트",
+    department: "디자인 시스템 · 풀스택 개발",
     type: "프리랜서",
     projects: [
       {
         period: "2025.08 ~ 2025.09",
-        title: "내부 교육 플랫폼 디자인 시스템 개발",
+        title: "SK AX 내부 교육 플랫폼 — 디자인 시스템 구축",
         description:
-          "SK 구성원들이 교육을 받고 자신의 스킬을 확인할 수 있는 서비스. FE 2명·서버 2명 팀에서 Next.js → React 전환 및 Storybook 기반 디자인 시스템 구축을 담당했습니다.",
+          "SK 구성원 대상 교육·스킬 관리 서비스. FE 2명·서버 2명 팀에서 Next.js → React 전환 및 Storybook 기반 디자인 시스템 구축을 담당했습니다.",
         problem: [
           "SEO·SSR이 필요하지 않음에도 Next.js를 사용해 불필요한 빌드 복잡도가 있었습니다.",
           "프로젝트 간 프론트 컴포넌트를 관리하는 시스템이 없어 중복 개발이 빈번했습니다.",
         ],
         impact: [
-          "직접 제안한 Next.js 의존성 제거로 빌드 복잡도를 낮추고 모노레포 환경의 패키지 관리를 단순화했습니다.",
-          "Storybook 기반 디자인 시스템을 직접 설계·구축해 컴포넌트 중복 개발을 방지하는 체계를 마련했습니다.",
+          "Next.js 의존성 제거로 빌드 복잡도를 낮추고 모노레포 환경의 패키지 관리를 단순화했습니다.",
+          "Storybook 기반 디자인 시스템을 설계·구축해 컴포넌트 중복 개발을 방지하는 체계를 마련했습니다.",
         ],
         contributions: [
-          "SEO·SSR이 불필요한 점을 분석하고 Next.js → React 전환",
+          "SEO·SSR이 불필요한 점을 분석하고 Next.js → React 전환을 제안·실행",
           "프로젝트 간 컴포넌트 중복 문제를 파악하고 Storybook 기반 디자인 시스템 구축 주도",
-          "Tailwind + SCSS 스타일링 시스템 적용",
         ],
         techStack: ["React", "TypeScript", "SCSS", "Tailwind", "Storybook"],
       },
-    ],
-  },
-  {
-    period: "2025.05 ~ 2025.06",
-    name: "에이치나인 (SK 하이닉스 파견)",
-    department: "디자인 시스템 개발",
-    type: "프리랜서",
-    projects: [
       {
         period: "2025.05 ~ 2025.06",
-        title: "SK 그룹사 공통 디자인 시스템 유지보수",
+        title: "SK 하이닉스 그룹사 공통 디자인 시스템 — 테스트 자동화",
         description:
-          "SK 사내 공통으로 사용할 디자인 시스템 유지보수 프로젝트. Ant Design 포크 기반 디자인 시스템의 Storybook 유지보수를 단독으로 담당하며 유닛 테스트 체계를 도입했습니다.",
+          "SK 사내 공통 Ant Design 포크 기반 디자인 시스템의 Storybook 유지보수를 담당하며, 부재했던 유닛 테스트 체계를 도입했습니다.",
         problem: [
-          "컴포넌트 테스트 코드가 전무해 수동 QA에 과도한 시간이 소요되는 문제를 발견했습니다.",
+          "컴포넌트 테스트 코드가 전무해 배포당 수동 QA에 2~3일이 소요되고 있었습니다.",
         ],
         impact: [
-          "자발적으로 도입한 유닛 테스트로 배포당 2~3일 소요되던 수동 QA를 1일 이내로 단축했습니다.",
-          "수동 QA 없이 컴포넌트 안정성을 자동 검증하는 체계를 마련했습니다.",
-          "SK 그룹사 전체에 배포되는 라이브러리의 품질 기준을 직접 정의하고 테스트 체계를 수립했습니다.",
+          "유닛 테스트 도입으로 배포당 수동 QA 2~3일 → 1일 이내로 단축했습니다.",
+          "SK 그룹사 전체에 배포되는 라이브러리의 품질 기준을 정의하고 테스트 체계를 수립했습니다.",
         ],
         contributions: [
-          "TypeScript + Storybook 기반 디자인 시스템 유지보수",
-          "테스트 코드 부재 문제를 파악하고 유닛 테스트 체계를 직접 설계·구현",
+          "디자인 시스템 유지보수 및 유닛 테스트 체계 설계·구현",
         ],
         techStack: ["TypeScript", "Storybook", "Ant Design"],
       },
-    ],
-  },
-  {
-    period: "2025.01 ~ 2025.03",
-    name: "나눔사",
-    type: "개인",
-    projects: [
       {
         period: "2025.01 ~ 2025.03",
-        title: "위치 기반 무료 나눔 플랫폼",
+        title: "위치 기반 무료 나눔 플랫폼 — 풀스택 개발",
         description:
-          "무료 나눔이 이뤄지고 있는 장소를 공유하는 서비스. FE·BE·iOS·Android·디자인까지 전 영역을 스스로 기획하고 단독 개발했습니다.",
+          "무료 나눔 장소를 공유하는 위치 기반 서비스. FE·BE·iOS·Android·인프라·디자인까지 전 영역을 기획하고 개발했습니다.",
         problem: [
-          "기존 중고 나눔은 지역 커뮤니티나 오픈채팅에 분산되어 있어 주변 나눔 물품을 한눈에 확인하기 어려웠습니다.",
-          "풀스택 + CI/CD + 앱 출시까지 혼자 구성해본 경험을 쌓고 싶었습니다.",
+          "기존 중고 나눔이 지역 커뮤니티나 오픈채팅에 분산되어 있어 위치 기반 통합 플랫폼의 필요성을 정의했습니다.",
         ],
         impact: [
-          "기획부터 스토어 출시까지 전 과정을 독립적으로 완수하여 성공적으로 서비스를 런칭했습니다.",
-          "프론트엔드부터 백엔드·인프라·앱 스토어 출시까지 전체 개발 사이클을 독립적으로 완주하며 시스템 전반 이해도를 높였습니다.",
-          "k8s + ArgoCD GitOps 파이프라인을 스스로 설계·구성하며 컨테이너 오케스트레이션과 CD 자동화 역량을 확보했습니다.",
-          "브랜치 전략 기반 Docker 이미지 태그 관리 방식을 직접 설계하여 dev/prod 환경 분리 운영을 구현했습니다.",
+          "기획부터 스토어 출시까지 전 과정을 완수하여 서비스를 런칭했습니다.",
+          "k8s + ArgoCD GitOps 파이프라인을 설계·구성하며 컨테이너 오케스트레이션과 CD 자동화 역량을 확보했습니다.",
         ],
         contributions: [
-          "Next.js + Recoil + Styled-components로 프론트엔드 설계·개발",
-          "Leaflet.js로 지도 기반 UI를 직접 설계·구현하고 지도 뷰와 리스트 뷰 연동",
-          "도로명 주소 API 연동으로 주소 검색 시 나눔 장소 지도가 자동 이동하도록 구현",
-          "Firebase OAuth 기반 구글·애플·카카오 소셜 로그인 연동",
-          "Python FastAPI로 RESTful API 설계·개발, PostgreSQL 위치 데이터 스키마 설계",
-          "AWS EC2 Linux 환경에서 인프라 구성·배포",
+          "Next.js + Recoil + Leaflet.js로 지도 기반 프론트엔드 설계·개발",
+          "Python FastAPI + PostgreSQL로 RESTful API 및 위치 데이터 스키마 설계",
           "Docker, k8s, GitHub Actions, ArgoCD 기반 GitOps 파이프라인 설계·구축",
-          "feature/dev/main 브랜치 전략으로 Docker image 태그 관리, Kustomize로 k8s deployment 자동 반영",
-          "iOS(Swift) / Android(Java) WebApp 개발 후 스토어 업로드",
+          "iOS(Swift) / Android(Java) WebApp 개발 후 스토어 출시",
         ],
         techStack: [
           "Next.js",
@@ -253,15 +229,12 @@ const companies: Company[] = [
           "Recoil",
           "Leaflet.js",
           "Firebase Auth",
-          "Socket.io",
           "FastAPI",
           "PostgreSQL",
           "Docker",
           "Kubernetes",
           "GitHub Actions",
           "ArgoCD",
-          "iOS(Swift)",
-          "Android(Java)",
         ],
         screenshots: [
           {
@@ -288,16 +261,16 @@ const companies: Company[] = [
           {
             src: "/images/projects/nanumsa_cicd.png",
             caption:
-              "feature/dev/main 브랜치 따라 버전이 다르게 올라가게 함 - Docker image 태그 + Kustomize로 k8s deployment 자동 반영",
+              "브랜치 전략 기반 Docker image 태그 + Kustomize로 k8s deployment 자동 반영",
           },
           {
             src: "/images/projects/nanumsa_k8s.png",
-            caption: "k8s로 컨테이너를 관리함",
+            caption: "k8s 컨테이너 관리",
           },
           {
             src: "/images/projects/nanumsa_argocd.png",
             caption:
-              "GitHub Actions이 완료되어 deployment가 변경되고 도커의 새 버전이 생기면 ArgoCD에서 sync가 가능하다",
+              "GitHub Actions 완료 후 ArgoCD에서 자동 sync",
           },
         ],
       },
@@ -1791,6 +1764,183 @@ export default function HomePage() {
         {companies.map((company, i) => (
           <CompanyCard key={i} company={company} t={t} />
         ))}
+
+        {/*  기술 역량 데모  */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: `${tokens.spacing[16]}px`,
+            width: "100%",
+            maxWidth: 1280,
+            pt: `${tokens.spacing[16]}px`,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              bgcolor: t.accentPurpleLight,
+              borderRadius: `${tokens.radius.full}px`,
+              px: "14px",
+              py: `${tokens.spacing[6]}px`,
+            }}
+          >
+            <MemoryIcon sx={{ fontSize: 16, color: t.accentPurple }} />
+            <Typography
+              sx={{
+                fontSize: tokens.fontSize.sm,
+                fontWeight: 600,
+                color: t.accentPurple,
+              }}
+            >
+              기술 역량 데모
+            </Typography>
+          </Box>
+          <Typography
+            sx={{
+              fontSize: tokens.fontSize["3xl"],
+              fontWeight: 700,
+              color: t.textPrimary,
+            }}
+          >
+            Live Demo
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: tokens.fontSize.md,
+              color: t.textSecondary,
+              textAlign: "center",
+              lineHeight: 1.7,
+              maxWidth: 640,
+            }}
+          >
+            실무 프로젝트에서 활용한 기술을 직접 체험할 수 있는 데모입니다.
+          </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 1280,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
+            gap: `${tokens.spacing[20]}px`,
+          }}
+        >
+          {[
+            {
+              to: "/image-filter",
+              title: "WebAssembly 이미지 필터",
+              desc: "Rust → WASM 빌드로 브라우저에서 네이티브 수준의 이미지 처리를 구현합니다. Web Worker 싱글턴 패턴으로 UI 블로킹 없이 실시간 필터를 적용합니다.",
+              relation:
+                "저사양 패드 최적화(웅진씽크빅), 대량 데이터 처리 성능 개선(요기요) 경험에서 비롯된 성능 중심 사고를 보여줍니다.",
+              color: "#7C3AED",
+            },
+            {
+              to: "/cad",
+              title: "미니 CAD — 3D 모델링·조립",
+              desc: "2D 스케치 → 3D 돌출 → 모서리 기반 조립 → 4방향 설계도까지, CAD 소프트웨어의 핵심 워크플로우를 Three.js로 구현합니다.",
+              relation:
+                "Fabric.js 기반 캡처 편집(요기요 I.Log.Yo), three.js 3D 렌더링 최적화(웅진씽크빅 초등) 등 복잡한 Canvas/3D 인터랙션 구현 역량을 보여줍니다.",
+              color: "#2563EB",
+            },
+            {
+              to: "/rendering",
+              title: "렌더링 전략 비교 — SSG · SSR · ISR",
+              desc: "동일 콘텐츠를 SSG, SSR, ISR 세 가지 방식으로 렌더링하고 각각의 빌드 타임·응답 시간·캐시 동작을 직접 비교합니다.",
+              relation:
+                "Next.js 기반 프로젝트(요기요 YoDa·I.Log.Yo, 나눔사)에서 SSR/SSG 선택 기준을 직접 판단한 경험, SK AX에서 불필요한 SSR을 제거한 의사결정의 근거를 보여줍니다.",
+              color: "#16A34A",
+            },
+            {
+              to: "/a11y",
+              title: "웹 접근성 — 키보드·스크린리더·모달",
+              desc: "키보드 내비게이션, 스크린리더 폼, 모달 포커스 트랩 등 WCAG 기준의 접근성 패턴을 구현합니다.",
+              relation:
+                "다양한 사용자 환경 대응(저사양 패드, 멀티 플랫폼 WebView) 경험에서 확장된 사용자 중심 개발 역량을 보여줍니다.",
+              color: "#EA580C",
+            },
+          ].map(({ to, title, desc, relation, color }) => (
+            <Box
+              key={to}
+              component={Link}
+              to={to}
+              sx={{
+                bgcolor: t.bgPrimary,
+                borderRadius: `${tokens.radius.lg}px`,
+                border: `1.5px solid ${t.borderDefault}`,
+                overflow: "hidden",
+                textDecoration: "none",
+                transition: "border-color 0.15s, box-shadow 0.15s",
+                "&:hover": {
+                  borderColor: color,
+                  boxShadow: `0 4px 20px ${color}18`,
+                },
+              }}
+            >
+              <Box sx={{ height: 4, bgcolor: color }} />
+              <Box
+                sx={{
+                  p: "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: `${tokens.spacing[12]}px`,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: tokens.fontSize.lg,
+                    fontWeight: 700,
+                    color: t.textPrimary,
+                  }}
+                >
+                  {title}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: tokens.fontSize.sm,
+                    color: t.textSecondary,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  {desc}
+                </Typography>
+                <Box
+                  sx={{
+                    bgcolor: `${color}10`,
+                    border: `1px solid ${color}30`,
+                    borderRadius: `${tokens.radius.md}px`,
+                    px: `${tokens.spacing[12]}px`,
+                    py: `${tokens.spacing[10]}px`,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: 600,
+                      color,
+                      mb: "4px",
+                    }}
+                  >
+                    실무 연결
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: tokens.fontSize.xs,
+                      color: t.textSecondary,
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    {relation}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Box>
   );
