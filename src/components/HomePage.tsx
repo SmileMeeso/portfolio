@@ -4,7 +4,6 @@ import { useTheme } from "@mui/material/styles";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LanguageIcon from "@mui/icons-material/Language";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import GroupIcon from "@mui/icons-material/Group";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -30,48 +29,22 @@ const languageSkills = [
   "C",
   "C#",
 ];
-const frontEndSkills = [
+const frameworkSkills = [
   "React.js",
   "Next.js",
   "Redux",
   "Recoil",
-  "MUI",
-  "Tailwind CSS",
-  "SCSS",
-  "Video.js",
-  "WebRTC",
-  "Leaflet.js",
   "Fabric.js",
-  "PWA",
-];
-const backEndSkills = [
-  "Node.js",
-  "Python",
-  "FastAPI",
-  "PHP",
+  "Video.js",
+  "Leaflet.js",
   "Express.js",
-  "PostgreSQL",
-  "MySQL",
-  "Firebase",
+  "FastAPI",
 ];
+const serverSkills = ["Linux (Ubuntu, CentOS)"];
 const toolingSkills = ["Storybook", "Webpack", "Vite"];
-const devOpsSkills = [
-  "Docker",
-  "Kubernetes (k8s)",
-  "GitHub Actions",
-  "ArgoCD",
-  "AWS EC2",
-  "Linux (Ubuntu / CentOS)",
-];
-const mobileSkills = ["Android (Java)", "iOS (Swift)", "Flutter (WebView)"];
-const etcSkills = [
-  "Git / GitHub",
-  "JIRA",
-  "Slack",
-  "Jest",
-  "Playwright",
-  "Ant Design",
-];
+const devOpsSkills = ["GitHub Actions", "Docker", "k8s"];
+const dbSkills = ["PostgreSQL", "MySQL"];
+const etcSkills = ["Git", "GitHub", "JIRA", "Slack"];
 
 //  Projects 데이터
 
@@ -131,12 +104,10 @@ const companies: Company[] = [
           "위치 기반 경로 시각화 기능을 안정적으로 설계·납품하며 다수의 풀필먼트 고객사 확보에 직접 기여했습니다.",
         ],
         contributions: [
-          "팀 합류 후 기존 코드의 구조적 문제를 파악하고 개선 방향을 직접 수립",
-          "Storybook 기반 디자인 시스템 도입을 제안·적용해 정리되지 않은 컴포넌트 구조를 체계화",
-          "Jest + Playwright 기반 유닛·E2E 테스트 자동화 체계를 직접 설계·도입해 QA 시간 대폭 단축",
-          "정리된 개발 환경을 기반으로 위치 기반 경로 시각화 서비스 설계·구현",
+          "기존 정리되지 않은 컴포넌트 구조의 문제를 분석하고, 모노레포, Storybook 기반 디자인 시스템 도입을 제안·적용하여 컴포넌트를 체계화",
+          "테스트 자동화 체계가 없는 상황을 파악하고 E2E·유닛 테스트를 직접 설계·도입해 QA 시간을 대폭 단축",
+          "정리된 개발 환경을 기반으로 위치 기반 경로 시각화 서비스를 설계·구현",
           "보안 뉴스를 가져오는 슬랙 봇을 사용해 프론트엔드 취약점 문제에 대응",
-          "풀필먼트 서비스가 필요한 다양한 회사들과 컨택하고 서비스 납품",
         ],
         techStack: [
           "React",
@@ -210,7 +181,7 @@ const companies: Company[] = [
           "Storybook 기반 디자인 시스템을 직접 설계·구축해 컴포넌트 중복 개발을 방지하는 체계를 마련했습니다.",
         ],
         contributions: [
-          "SEO·SSR이 불필요한 점을 분석하고 Next.js → React 전환을 직접 제안·실행",
+          "SEO·SSR이 불필요한 점을 분석하고 Next.js → React 전환",
           "프로젝트 간 컴포넌트 중복 문제를 파악하고 Storybook 기반 디자인 시스템 구축 주도",
           "Tailwind + SCSS 스타일링 시스템 적용",
         ],
@@ -1600,12 +1571,6 @@ export default function HomePage() {
               label: "meeso-not-miso.com",
               href: "https://www.meeso-not-miso.com/",
             },
-            {
-              icon: (
-                <LocationOnIcon sx={{ fontSize: 16, color: t.accentPurple }} />
-              ),
-              label: "경기도 성남시 분당구 정자동",
-            },
           ].map(({ icon, label, href }) => (
             <Box
               key={label}
@@ -1668,19 +1633,19 @@ export default function HomePage() {
           >
             {[
               {
-                category: "Languages",
+                category: "Programming Languages",
                 skills: languageSkills,
                 color: "#7C3AED",
               },
               {
-                category: "Front-end",
-                skills: frontEndSkills,
+                category: "Framework / Library",
+                skills: frameworkSkills,
                 color: "#9333EA",
               },
-              { category: "Back-end", skills: backEndSkills, color: "#2563EB" },
+              { category: "Server", skills: serverSkills, color: "#2563EB" },
               { category: "Tooling", skills: toolingSkills, color: "#0891B2" },
               { category: "DevOps", skills: devOpsSkills, color: "#16A34A" },
-              { category: "Mobile", skills: mobileSkills, color: "#EA580C" },
+              { category: "DB", skills: dbSkills, color: "#EA580C" },
               { category: "Etc", skills: etcSkills, color: "#6B7280" },
             ].map(({ category, skills, color }) => (
               <Box key={category}>
