@@ -2061,7 +2061,6 @@ export default function MiniCadPage() {
     if (!go()) return;
 
     // ── Part 1: OD=130(r=65), ID=100(r=50), h=100 ──
-    await step("부품 1 스케치 — 외경 130, 내경 100", 300);
     const p1 = useCadStore.getState().addPart();
     useCadStore.getState().renamePart(p1, "부품 1");
     useCadStore.getState().updateSketch(p1, {
@@ -2074,13 +2073,13 @@ export default function MiniCadPage() {
       ],
     });
     setAutoSelectPart({ partId: p1, view3D: false });
-    await step("부품 1 스케치 — 외경 130, 내경 100", 900);
+    await step("부품 1 스케치 — 외경 130, 내경 100", 2000);
     if (!go()) return;
     useCadStore
       .getState()
       .setExtrude(p1, { height: 100, loops: [], circleIds: [`${p1}-o`] });
     setAutoSelectPart({ partId: p1, view3D: true });
-    await step("부품 1 돌출 100", 1000);
+    await step("부품 1 돌출 100", 2000);
 
     // ── Part 2: OD=160(r=80), ID=130(r=65), h=30 ──
     if (!go()) return;
@@ -2096,13 +2095,13 @@ export default function MiniCadPage() {
       ],
     });
     setAutoSelectPart({ partId: p2, view3D: false });
-    await step("부품 2 스케치 — 외경 160, 내경 130", 900);
+    await step("부품 2 스케치 — 외경 160, 내경 130", 2000);
     if (!go()) return;
     useCadStore
       .getState()
       .setExtrude(p2, { height: 30, loops: [], circleIds: [`${p2}-o`] });
     setAutoSelectPart({ partId: p2, view3D: true });
-    await step("부품 2 돌출 30", 1000);
+    await step("부품 2 돌출 30", 2000);
 
     // ── Part 3: OD=100(r=50), ID=70(r=35), h=100 ──
     if (!go()) return;
@@ -2118,13 +2117,13 @@ export default function MiniCadPage() {
       ],
     });
     setAutoSelectPart({ partId: p3, view3D: false });
-    await step("부품 3 스케치 — 외경 100, 내경 70", 900);
+    await step("부품 3 스케치 — 외경 100, 내경 70", 2000);
     if (!go()) return;
     useCadStore
       .getState()
       .setExtrude(p3, { height: 100, loops: [], circleIds: [`${p3}-o`] });
     setAutoSelectPart({ partId: p3, view3D: true });
-    await step("부품 3 돌출 100", 1000);
+    await step("부품 3 돌출 100", 2000);
 
     // ── Part 4: OD=130(r=65), ID=100(r=50), 내경80(r=40) 그린 뒤 r=40 제거, h=80 ──
     if (!go()) return;
@@ -2141,7 +2140,7 @@ export default function MiniCadPage() {
       ],
     });
     setAutoSelectPart({ partId: p4, view3D: false });
-    await step("부품 4 스케치 — 외경 130, 내경 100, 내경 80 그리기", 1200);
+    await step("부품 4 스케치 — 외경 130, 내경 100, 내경 80 그리기", 2000);
     if (!go()) return;
     // 내경 80(r=40) 제거
     useCadStore.getState().updateSketch(p4, {
@@ -2153,21 +2152,21 @@ export default function MiniCadPage() {
         { id: `${p4}-i`, cx: 0, cy: 0, r: 50, isHole: true },
       ],
     });
-    await step("부품 4 — 내경 80 스케치 제거", 900);
+    await step("부품 4 — 내경 80 스케치 제거", 2000);
     if (!go()) return;
     useCadStore
       .getState()
       .setExtrude(p4, { height: 80, loops: [], circleIds: [`${p4}-o`] });
     setAutoSelectPart({ partId: p4, view3D: true });
-    await step("부품 4 돌출 80", 1000);
+    await step("부품 4 돌출 80", 2000);
 
     // ── 조립 탭 ──
     if (!go()) return;
     setAutoSelectPart(null);
-    await step("조립 탭으로 이동", 400);
+    await step("조립 탭으로 이동", 500);
     setTab("assembly");
     await waitForScene();
-    await sleep(600);
+    await sleep(500);
 
     const api = assemblySceneAPIRef.current!;
     const getPart = (id: string) =>
@@ -2175,35 +2174,31 @@ export default function MiniCadPage() {
 
     // 부품 1 배치 (고정)
     if (!go()) return;
-    await step("부품 1 배치", 400);
     const i1 = useCadStore.getState().addInstance(p1, [0, 0, 0]);
     api.addInstance(
       { instanceId: i1, partId: p1, position: [0, 0, 0], rotX: 0, links: [] },
       getPart(p1),
     );
     api.setCameraPosition([350, 400, 700], [0, 50, 0]);
-    await sleep(800);
+    await step("부품 1 배치", 2000);
 
     // 부품 3 배치
     if (!go()) return;
-    await step("부품 3 배치 — 조립 준비", 400);
     const i3 = useCadStore.getState().addInstance(p3, [350, 0, 0]);
     api.addInstance(
       { instanceId: i3, partId: p3, position: [350, 0, 0], rotX: 0, links: [] },
       getPart(p3),
     );
     api.setCameraPosition([500, 350, 750], [175, 50, 0]);
-    await sleep(800);
+    await step("부품 3 배치 — 조립 준비", 2000);
 
-    // 카메라를 부품1 내경이 보이도록
+    // 카메라를 부품1 바닥 내경이 보이도록 (아래에서 올려보는 각도)
     if (!go()) return;
-    await step("부품 1 내경이 보이도록 카메라 전환", 200);
-    api.setCameraPosition([80, 280, 520], [0, 50, 0]);
-    await sleep(1000);
+    api.setCameraPosition([200, -150, 400], [0, 0, 0]);
+    await step("부품 1 바닥 내경이 보이도록 카메라 전환", 2000);
 
     // 부품1 내경 + 부품3 외경 결합
     if (!go()) return;
-    await step("부품 1 내경 ↔ 부품 3 외경 결합", 300);
     const r13 = api.assemble(i1, "hole-0-bottom", i3, "circ-0-bottom");
     if (r13.success && r13.moverPos) {
       useCadStore.getState().setInstancePosition(i3, r13.moverPos);
@@ -2216,11 +2211,10 @@ export default function MiniCadPage() {
       });
     }
     api.setCameraPosition([250, 350, 600], [0, 50, 0]);
-    await sleep(1000);
+    await step("부품 1 내경 ↔ 부품 3 외경 결합", 2000);
 
     // 부품 2 배치
     if (!go()) return;
-    await step("부품 2 배치 — 조립 준비", 400);
     const i2 = useCadStore.getState().addInstance(p2, [350, 0, 200]);
     api.addInstance(
       {
@@ -2233,11 +2227,10 @@ export default function MiniCadPage() {
       getPart(p2),
     );
     api.setCameraPosition([520, 320, 720], [150, 30, 80]);
-    await sleep(800);
+    await step("부품 2 배치 — 조립 준비", 2000);
 
     // 부품2 바닥 내경 + 부품1 바닥 외경 결합
     if (!go()) return;
-    await step("부품 2 바닥 내경 ↔ 부품 1 바닥 외경 결합", 300);
     const r12 = api.assemble(i1, "circ-0-bottom", i2, "hole-0-bottom");
     if (r12.success && r12.moverPos) {
       useCadStore.getState().setInstancePosition(i2, r12.moverPos);
@@ -2250,11 +2243,10 @@ export default function MiniCadPage() {
       });
     }
     api.setCameraPosition([300, 280, 620], [0, 30, 0]);
-    await sleep(1000);
+    await step("부품 2 바닥 내경 ↔ 부품 1 바닥 외경 결합", 2000);
 
     // 부품 4 배치
     if (!go()) return;
-    await step("부품 4 배치 — 조립 준비", 400);
     const i4 = useCadStore.getState().addInstance(p4, [-350, 0, 0]);
     api.addInstance(
       {
@@ -2267,11 +2259,10 @@ export default function MiniCadPage() {
       getPart(p4),
     );
     api.setCameraPosition([-200, 420, 720], [-80, 80, 0]);
-    await sleep(800);
+    await step("부품 4 배치 — 조립 준비", 2000);
 
     // 부품1 위쪽 외경 + 부품4 바닥 외경 결합
     if (!go()) return;
-    await step("부품 1 위쪽 외경 ↔ 부품 4 바닥 외경 결합", 300);
     const r14 = api.assemble(i1, "circ-0-top", i4, "circ-0-bottom");
     if (r14.success && r14.moverPos) {
       useCadStore.getState().setInstancePosition(i4, r14.moverPos);
@@ -2284,13 +2275,12 @@ export default function MiniCadPage() {
       });
     }
     api.setCameraPosition([450, 550, 900], [0, 100, 0]);
-    await sleep(1200);
+    await step("부품 1 위쪽 외경 ↔ 부품 4 바닥 외경 결합", 2000);
 
     // 설계도 탭
     if (!go()) return;
-    await step("설계도 보기", 400);
     setTab("blueprint");
-    await sleep(600);
+    await step("설계도 보기", 2000);
 
     setDemoStatus("");
     setIsDemoRunning(false);
