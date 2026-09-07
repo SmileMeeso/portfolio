@@ -6,6 +6,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import LanguageIcon from "@mui/icons-material/Language";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import GroupIcon from "@mui/icons-material/Group";
+import SchoolIcon from "@mui/icons-material/School";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -36,9 +37,13 @@ const frameworkSkills = [
   "Next.js",
   "Redux",
   "Recoil",
+  "MUI",
+  "Tailwind CSS",
   "Fabric.js",
   "Video.js",
   "Leaflet.js",
+  "WebRTC",
+  "PWA",
   "Express.js",
   "FastAPI",
 ];
@@ -48,9 +53,15 @@ const aiSkills = [
   "Subagents",
   "Custom Commands",
 ];
-const serverSkills = ["Linux (Ubuntu, CentOS)"];
+const serverSkills = ["Node.js", "Linux (Ubuntu, CentOS)", "Firebase"];
 const toolingSkills = ["Storybook", "Webpack", "Vite"];
-const devOpsSkills = ["GitHub Actions", "Docker", "k8s"];
+const devOpsSkills = [
+  "GitHub Actions",
+  "Docker",
+  "k8s",
+  "ArgoCD",
+  "AWS EC2",
+];
 const dbSkills = ["PostgreSQL", "MySQL"];
 const etcSkills = ["Git", "GitHub", "JIRA", "Slack"];
 
@@ -88,6 +99,69 @@ const typeColor: Record<string, string> = {
   파견직: "#6B7280",
   개인: "#9333EA",
 };
+
+/** 경력 요약표 — 상세 프로젝트 타임라인(companies) 위에 스캔용으로 노출 */
+const careerSummary: {
+  period: string;
+  company: string;
+  role: string;
+  type: keyof typeof typeColor;
+}[] = [
+  {
+    period: "2025.10 ~ 재직중",
+    company: "omelet",
+    role: "개발팀 · 물류 최적화 서비스 FE 전담, AI 하네스 설계",
+    type: "정규직",
+  },
+  {
+    period: "2025.08 ~ 2025.09",
+    company: "SK AX",
+    role: "내부 교육 플랫폼 디자인 시스템 구축",
+    type: "프리랜서",
+  },
+  {
+    period: "2025.05 ~ 2025.06",
+    company: "SK 하이닉스",
+    role: "그룹사 공통 디자인 시스템 테스트 자동화",
+    type: "프리랜서",
+  },
+  {
+    period: "2025.01 ~ 2025.03",
+    company: "나눔사 (개인 프로젝트)",
+    role: "위치 기반 무료 나눔 플랫폼 — 풀스택 개발 및 스토어 출시",
+    type: "개인",
+  },
+  {
+    period: "2022.07 ~ 2024.10",
+    company: "(주)위대한상상 (요기요)",
+    role: "R&D Center · Data Service팀",
+    type: "정규직",
+  },
+  {
+    period: "2021.04 ~ 2022.06",
+    company: "웅진씽크빅",
+    role: "IT 개발실 · 스마트올 중학 / 초등",
+    type: "프리랜서",
+  },
+  {
+    period: "2021.01 ~ 2021.03",
+    company: "해피브릿지",
+    role: "개발팀",
+    type: "스타트업",
+  },
+  {
+    period: "2018.05 ~ 2020.12",
+    company: "커넥트닷",
+    role: "개발팀",
+    type: "스타트업",
+  },
+  {
+    period: "2017.06 ~ 2018.05",
+    company: "PSR (SK 플래닛 파견)",
+    role: "11번가 로그 TF",
+    type: "파견직",
+  },
+];
 
 const companies: Company[] = [
   {
@@ -1596,6 +1670,10 @@ export default function HomePage() {
               label: "meeso-not-miso.com",
               href: "https://www.meeso-not-miso.com/",
             },
+            {
+              icon: <SchoolIcon sx={{ fontSize: 16, color: t.accentPurple }} />,
+              label: "명지대학교 기계공학과 졸업",
+            },
           ].map(({ icon, label, href }) => (
             <Box
               key={label}
@@ -1712,6 +1790,81 @@ export default function HomePage() {
                       }}
                     />
                   ))}
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </SectionCard>
+
+        {/*  경력 요약  */}
+        <SectionCard title="경력 요약" t={t}>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            {careerSummary.map((item, i) => (
+              <Box
+                key={item.period + item.company}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: `${tokens.spacing[16]}px`,
+                  flexWrap: "wrap",
+                  py: `${tokens.spacing[12]}px`,
+                  borderBottom:
+                    i < careerSummary.length - 1
+                      ? `1px solid ${t.borderLight}`
+                      : "none",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: tokens.fontSize.sm,
+                    color: t.textTertiary,
+                    width: 150,
+                    flexShrink: 0,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {item.period}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: 600,
+                    color: t.textPrimary,
+                    width: 200,
+                    flexShrink: 0,
+                  }}
+                >
+                  {item.company}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: tokens.fontSize.sm,
+                    color: t.textSecondary,
+                    flex: 1,
+                    minWidth: 200,
+                  }}
+                >
+                  {item.role}
+                </Typography>
+                <Box
+                  sx={{
+                    flexShrink: 0,
+                    bgcolor: `${typeColor[item.type]}18`,
+                    border: `1px solid ${typeColor[item.type]}40`,
+                    borderRadius: `${tokens.radius.full}px`,
+                    px: "10px",
+                    py: "3px",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: 700,
+                      color: typeColor[item.type],
+                    }}
+                  >
+                    {item.type}
+                  </Typography>
                 </Box>
               </Box>
             ))}
