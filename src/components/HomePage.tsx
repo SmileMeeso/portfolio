@@ -100,6 +100,49 @@ const typeColor: Record<string, string> = {
   개인: "#9333EA",
 };
 
+/** 핵심 역량 — 협업 관점. 각 항목은 아래 companies 의 실제 근거와 대응된다 */
+const coreCompetencies: {
+  title: string;
+  body: string;
+  evidence: string;
+  color: string;
+}[] = [
+  {
+    title: "직군 경계 없이 같은 언어로 대화합니다",
+    body: "프론트엔드를 중심으로 백엔드·앱·인프라를 직접 개발해 왔습니다. 서버·DB·k8s를 스스로 구성해 본 경험이 있어 백엔드·인프라 동료와 구현 제약을 놓고 바로 논의할 수 있고, iOS·Android·Flutter에서 웹뷰가 어떻게 동작해야 하는지 알기 때문에 앱 개발자와 역할 경계를 먼저 정리합니다.",
+    evidence:
+      "나눔사에서 FE·BE·iOS·Android·인프라·디자인 전 영역 단독 수행 · 웅진씽크빅에서 3개 플랫폼 웹뷰 동시 대응",
+    color: "#2563EB",
+  },
+  {
+    title: "디자이너와 프론트엔드 사이에 공용 언어를 만듭니다",
+    body: "컴포넌트가 정리되지 않아 같은 UI를 매번 다시 만드는 상황을 여러 팀에서 반복해 겪고, Storybook 기반 디자인 시스템을 직접 제안·구축했습니다. 디자이너와 컴포넌트 단위로 합의하는 구조를 만들어 중복 개발과 재작업을 줄였습니다.",
+    evidence:
+      "omelet · SK AX · SK 하이닉스 디자인 시스템 설계·구축 · 요기요와 I.Log.Yo에 팀 최초 Storybook 도입",
+    color: "#9333EA",
+  },
+  {
+    title: "비개발자의 반복 요청을 제품 기능으로 바꿉니다",
+    body: "영업팀·데이터 분석가·데이터 사이언티스트가 각기 다른 통계를 매번 개발팀에 요청하는 구조를 문제로 정의하고, 직접 통계를 구성할 수 있는 Drag & Drop 커스텀 대시보드를 선제적으로 기획·개발했습니다. 요청을 받아 처리하는 대신 요청이 생기는 원인을 없애는 쪽을 택합니다.",
+    evidence: "요기요 YoDa — 개발팀 요청 건수 약 절반으로 감소",
+    color: "#16A34A",
+  },
+  {
+    title: "AI 워크플로를 개인 도구가 아닌 팀 표준으로 만듭니다",
+    body: "팀원마다 AI 코딩 도구를 쓰는 방식이 달라 산출물 품질이 갈리는 문제를 프롬프트 실력이 아닌 컨텍스트 부재로 진단하고, 아키텍처·컨벤션·금지사항을 규칙 문서로 명문화해 코드와 같은 저장소에서 버전 관리했습니다. 판단 기준이 반복되는 작업은 전용 서브에이전트·커스텀 커맨드로 표준화했습니다.",
+    evidence:
+      "omelet — 3인 팀 전체가 동일한 하네스 공유, 리뷰가 스타일 지적 대신 설계 논의에 쓰이기 시작",
+    color: "#DB2777",
+  },
+  {
+    title: "다음 사람이 이어받을 수 있는 상태로 넘깁니다",
+    body: "테스트와 문서가 없어 배포마다 수동 QA에 며칠이 드는 상황을 파악해 E2E·유닛 테스트 체계를 직접 설계·도입했고, Storybook으로 모듈화와 문서화를 함께 확보했습니다. 내가 없어도 굴러가는 상태를 만드는 것까지가 일의 끝이라고 봅니다.",
+    evidence:
+      "SK 하이닉스 — 배포당 수동 QA 2~3일에서 1일 이내로 단축 · I.Log.Yo — 안정화 후 다른 FE 개발자에게 인수인계 완료",
+    color: "#EA580C",
+  },
+];
+
 /** 경력 요약표 — 상세 프로젝트 타임라인(companies) 위에 스캔용으로 노출 */
 const careerSummary: {
   period: string;
@@ -1697,6 +1740,100 @@ export default function HomePage() {
             </Box>
           ))}
         </Box>
+
+        {/*  핵심 역량  */}
+        <SectionCard title="핵심 역량" t={t}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: `${tokens.spacing[16]}px`,
+            }}
+          >
+            {coreCompetencies.map((c, i) => (
+              <Box
+                key={c.title}
+                sx={{
+                  display: "flex",
+                  gap: `${tokens.spacing[16]}px`,
+                  alignItems: "flex-start",
+                  pb:
+                    i < coreCompetencies.length - 1
+                      ? `${tokens.spacing[16]}px`
+                      : 0,
+                  borderBottom:
+                    i < coreCompetencies.length - 1
+                      ? `1px solid ${t.borderLight}`
+                      : "none",
+                }}
+              >
+                <Box
+                  sx={{
+                    flexShrink: 0,
+                    width: 30,
+                    height: 30,
+                    borderRadius: `${tokens.radius.sm}px`,
+                    bgcolor: `${c.color}18`,
+                    border: `1px solid ${c.color}40`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mt: "2px",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: 700,
+                      color: c.color,
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: `${tokens.spacing[6]}px`,
+                    minWidth: 0,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: 700,
+                      color: t.textPrimary,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {c.title}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: tokens.fontSize.base,
+                      color: t.textSecondary,
+                      lineHeight: 1.8,
+                    }}
+                  >
+                    {c.body}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: tokens.fontSize.sm,
+                      color: c.color,
+                      lineHeight: 1.6,
+                      fontWeight: 500,
+                    }}
+                  >
+                    {c.evidence}
+                  </Typography>
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </SectionCard>
 
         {/*  자기소개  */}
         <SectionCard title="자기소개" t={t}>
