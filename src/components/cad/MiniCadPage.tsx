@@ -12,11 +12,9 @@ import { tokens } from "../../theme/theme";
 import { useCadStore } from "./cadStore";
 import SketchEditor from "./SketchEditor";
 import PartViewer3D from "./PartViewer3D";
-import AssemblyScene, {
-  type SceneAPI,
-  computeEdges,
-  partColorCSS,
-} from "./AssemblyScene";
+import AssemblyScene from "./AssemblyScene";
+import { type SceneAPI, computeEdges } from "./assemblyEngine";
+import { partColorCSS } from "./cadUtils";
 import type { CadPart, Plane, Sketch, ClosedLoop } from "./types";
 
 type Tab = "parts" | "assembly" | "blueprint";
