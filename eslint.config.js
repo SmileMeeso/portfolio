@@ -6,7 +6,8 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // src/wasm 은 wasm-pack 이 생성하는 산출물이라 손으로 고쳐도 재빌드 시 덮어써진다
+  globalIgnores(['dist', 'src/wasm']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
