@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Box,
@@ -43,30 +43,48 @@ export default function SsrDemo() {
   const saveMetrics = useRenderingStore((s) => s.saveMetrics);
   const isMountFetch = useRef(true);
 
-  const fetchData = async () => {
-    setLoading(true);
-    setData(null);
-    const t0 = performance.now();
-    const result = await fetchFromServer();
-    const initialResponse = Math.round(performance.now() - t0);
-    setData(result);
-    setLoading(false);
-    setRequestCount((n) => n + 1);
-    // 마운트 시 첫 요청만 저장 (페이지 진입 기준 초기 응답)
-    if (isMountFetch.current) {
-      isMountFetch.current = false;
-      saveMetrics("ssr", {
-        buildTime: 0, // SSR은 빌드 단계 없음
-        initialResponse,
-        measuredAt: new Date().toLocaleString("ko-KR", { hour12: false }),
-      });
-    }
-  };
+  // 응답을 화면 상태로 반영하는 부분만 분리한다.
+  // effect 는 이 함수를 .then 콜백에서만 호출하므로 동기 setState 가 없다.
+  const applyResult = useCallback(
+    (result: ServerData, initialResponse: number) => {
+      setData(result);
+      setLoading(false);
+      setRequestCount((n) => n + 1);
+      // 마운트 시 첫 요청만 저장 (페이지 진입 기준 초기 응답)
+      if (isMountFetch.current) {
+        isMountFetch.current = false;
+        saveMetrics("ssr", {
+          buildTime: 0, // SSR은 빌드 단계 없음
+          initialResponse,
+          measuredAt: new Date().toLocaleString("ko-KR", { hour12: false }),
+        });
+      }
+    },
+    [saveMetrics],
+  );
 
   // 페이지 마운트(= 요청) 시마다 새로 fetch ➞ SSR 시뮬레이션
   useEffect(() => {
-    fetchData();
-  }, []);
+    let cancelled = false;
+    const t0 = performance.now();
+    void fetchFromServer().then((result) => {
+      if (cancelled) return; // 응답 전에 페이지를 떠난 경우 상태를 건드리지 않는다
+      applyResult(result, Math.round(performance.now() - t0));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [applyResult]);
+
+  // 수동 재요청 — 로딩 초기화는 이벤트 핸들러에서 처리
+  const handleRefetch = () => {
+    setLoading(true);
+    setData(null);
+    const t0 = performance.now();
+    void fetchFromServer().then((result) =>
+      applyResult(result, Math.round(performance.now() - t0)),
+    );
+  };
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -180,7 +198,7 @@ export default function SsrDemo() {
           <Button
             variant="outlined"
             color="success"
-            onClick={fetchData}
+            onClick={handleRefetch}
             disabled={loading}
           >
             새 요청 시뮬레이션

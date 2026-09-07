@@ -52,11 +52,20 @@ export default function VideoPlayerModal({
     if (rafRef.current !== null) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
   }, []);
 
+  // 모달이 열리는 렌더에서 곧바로 재생 state 를 초기화한다
+  // (effect 에서 setState 하면 열릴 때마다 불필요한 연쇄 렌더가 발생)
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) {
+      setPlaying(false);
+      setLoading(true);
+      setControlsVisible(true);
+    }
+  }
+
   useEffect(() => {
     if (!open) { stopRaf(); return; }
-    setPlaying(false);
-    setLoading(true);
-    setControlsVisible(true);
     return () => {
       stopRaf();
       if (hideTimer.current) clearTimeout(hideTimer.current);

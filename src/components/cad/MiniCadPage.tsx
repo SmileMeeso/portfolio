@@ -70,12 +70,16 @@ function PartsTab({
   } | null>(null);
 
   // Demo: externally controlled selection
-  useEffect(() => {
-    if (!autoSelect) return;
-    setSelectedId(autoSelect.partId);
-    setView3D(autoSelect.view3D);
-    setExtrudePreview(null);
-  }, [autoSelect]); // eslint-disable-line react-hooks/exhaustive-deps
+  // autoSelect 가 바뀐 렌더에서 곧바로 state 를 맞춘다 (effect 사용 시 연쇄 렌더 발생)
+  const [prevAutoSelect, setPrevAutoSelect] = useState(autoSelect);
+  if (autoSelect !== prevAutoSelect) {
+    setPrevAutoSelect(autoSelect);
+    if (autoSelect) {
+      setSelectedId(autoSelect.partId);
+      setView3D(autoSelect.view3D);
+      setExtrudePreview(null);
+    }
+  }
 
   const selectedPart = parts.find((p) => p.id === selectedId) ?? null;
 
@@ -97,7 +101,8 @@ function PartsTab({
   const toggleDelete = (id: string) => {
     setDeleteSet((s) => {
       const n = new Set(s);
-      n.has(id) ? n.delete(id) : n.add(id);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
       return n;
     });
   };
@@ -705,9 +710,29 @@ function AssemblyTab({
     unlinkInstance,
   } = useCadStore();
 
-  const [selection, setSelection] = useState<
-    { instanceId: string; edgeId: string }[]
-  >([]);
+  type EdgeSel = { instanceId: string; edgeId: string };
+  const [selection, setSelection] = useState<EdgeSel[]>([]);
+  // 조립 가능 여부는 씬(ref)에 물어봐야 알 수 있다.
+  // 렌더 중에 ref 를 읽으면 씬이 바뀌어도 화면이 갱신되지 않으므로,
+  // 선택이 바뀌는 시점에 한 번 계산해 state 로 들고 있는다.
+  const [canAssemble, setCanAssemble] = useState(false);
+  const applySelection = useCallback(
+    (sel: EdgeSel[]) => {
+      setSelection(sel);
+      setCanAssemble(
+        sel.length === 2 &&
+          sel[0].instanceId !== sel[1].instanceId &&
+          (sceneAPIRef.current?.canAssemble(
+            sel[0].instanceId,
+            sel[0].edgeId,
+            sel[1].instanceId,
+            sel[1].edgeId,
+          ) ??
+            false),
+      );
+    },
+    [sceneAPIRef],
+  );
   const [clickedInstanceId, setClickedInstanceId] = useState<string | null>(
     null,
   );
@@ -728,7 +753,7 @@ function AssemblyTab({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [pendingGhostPartId]);
+  }, [pendingGhostPartId, sceneAPIRef]);
 
   const handleGhostPlace = useCallback(
     (partId: string, pos: [number, number, number]) => {
@@ -742,7 +767,7 @@ function AssemblyTab({
       }
       setPendingGhostPartId(null);
     },
-    [addInstance, parts],
+    [addInstance, parts, sceneAPIRef],
   );
 
   const handleStartGhost = (partId: string) => {
@@ -784,7 +809,7 @@ function AssemblyTab({
         targetEdgeId: a.edgeId,
       });
       // Keep mover's assembled edge selected so 180° rotate button appears immediately
-      setSelection([{ instanceId: b.instanceId, edgeId: b.edgeId }]);
+      applySelection([{ instanceId: b.instanceId, edgeId: b.edgeId }]);
     } else {
       setAssembleError(result.error ?? "조립 실패");
       setTimeout(() => setAssembleError(null), 3000);
@@ -798,14 +823,14 @@ function AssemblyTab({
     setInstanceRotX(instanceId, 0);
     unlinkInstance(instanceId);
     setClickedInstanceId(null);
-    setSelection([]);
+    applySelection([]);
   };
 
   const handleDeleteInstance = (instanceId: string) => {
     sceneAPIRef.current?.removeInstance(instanceId);
     removeInstance(instanceId);
     setClickedInstanceId(null);
-    setSelection([]);
+    applySelection([]);
   };
 
   const handleRotate = () => {
@@ -815,17 +840,6 @@ function AssemblyTab({
     const inst = instances.find((i) => i.instanceId === instanceId);
     if (inst) setInstanceRotX(instanceId, inst.rotX + Math.PI);
   };
-
-  const canAssemble =
-    selection.length === 2 &&
-    selection[0].instanceId !== selection[1].instanceId &&
-    (sceneAPIRef.current?.canAssemble(
-      selection[0].instanceId,
-      selection[0].edgeId,
-      selection[1].instanceId,
-      selection[1].edgeId,
-    ) ??
-      false);
 
   const clickedInst = instances.find((i) => i.instanceId === clickedInstanceId);
   const isLinked = (clickedInst?.links.length ?? 0) > 0;
@@ -870,7 +884,7 @@ function AssemblyTab({
           instances={instances}
           parts={parts}
           onSelectionChange={(sel) => {
-            setSelection(sel);
+            applySelection(sel);
             setClickedInstanceId(null);
           }}
           onInstanceClick={(id) =>
@@ -1322,7 +1336,7 @@ function TutorialOverlay({
       clearInterval(interval);
       window.removeEventListener("resize", compute);
     };
-  }, [step, cfg]);
+  }, [step, cfg, stepPad]);
 
   return (
     <>
@@ -2006,10 +2020,12 @@ export default function MiniCadPage() {
   const isDark = theme.palette.mode === "dark";
   const t = theme.palette.tokens.color;
   const [tab, setTab] = useState<Tab>("parts");
+  // 조립 탭은 최초 진입 시에만 마운트하고 이후 유지 (three.js 씬 재생성 방지)
   const [assemblyMounted, setAssemblyMounted] = useState(false);
-  useEffect(() => {
-    if (tab === "assembly") setAssemblyMounted(true);
-  }, [tab]);
+  const goTab = useCallback((next: Tab) => {
+    setTab(next);
+    if (next === "assembly") setAssemblyMounted(true);
+  }, []);
 
   // Shared scene API ref (passed down to AssemblyTab)
   const assemblySceneAPIRef = useRef<SceneAPI | null>(null);
@@ -2053,7 +2069,7 @@ export default function MiniCadPage() {
     }
     store.resetAll();
     setAutoSelectPart(null);
-    setTab("parts");
+    goTab("parts");
     await sleep(400);
 
     if (!go()) return;
@@ -2162,7 +2178,7 @@ export default function MiniCadPage() {
     if (!go()) return;
     setAutoSelectPart(null);
     await step("조립 탭으로 이동", 500);
-    setTab("assembly");
+    goTab("assembly");
     await waitForScene();
     await sleep(500);
 
@@ -2277,7 +2293,7 @@ export default function MiniCadPage() {
 
     // 설계도 탭
     if (!go()) return;
-    setTab("blueprint");
+    goTab("blueprint");
     await step("설계도 보기", 2000);
 
     setDemoStatus("");
@@ -2300,7 +2316,7 @@ export default function MiniCadPage() {
   const exitTutorial = useCallback(() => {
     setTutorialStep(0);
     setAutoSelectPart(null);
-    setTab("parts");
+    goTab("parts");
     const store = useCadStore.getState();
     if (assemblySceneAPIRef.current) {
       store.instances.forEach((inst) =>
@@ -2309,14 +2325,14 @@ export default function MiniCadPage() {
     }
     store.resetAll();
     tutorialPartIdRef.current = null;
-  }, []);
+  }, [goTab]);
 
   const tutorialAnimCancelRef = useRef(false);
 
   // Runs BEFORE the step is shown (tab switches, initial setup)
   const runTutorialPreAction = async (toStep: number) => {
     if (toStep === 4) {
-      setTab("parts");
+      goTab("parts");
       await sleep(300);
       const pid = useCadStore.getState().addPart();
       tutorialPartIdRef.current = pid;
@@ -2337,16 +2353,16 @@ export default function MiniCadPage() {
       }
     } else if (toStep === 6) {
       setAutoSelectPart(null);
-      setTab("assembly");
+      goTab("assembly");
       await waitForScene();
       await sleep(500);
     } else if (toStep === 7) {
       // Just switch to assembly — the instance placement & assembly happen in post-action
-      setTab("assembly");
+      goTab("assembly");
       await waitForScene();
       await sleep(400);
     } else if (toStep === 8) {
-      setTab("blueprint");
+      goTab("blueprint");
       await sleep(500);
     }
   };
@@ -2446,7 +2462,7 @@ export default function MiniCadPage() {
     }
     store.resetAll();
     setAutoSelectPart(null);
-    setTab('parts');
+    goTab('parts');
     setTutorialStep(1);
   };
 
@@ -2606,7 +2622,7 @@ export default function MiniCadPage() {
           {(["parts", "assembly", "blueprint"] as Tab[]).map((m) => (
             <Box
               key={m}
-              onClick={() => !isDemoRunning && setTab(m)}
+              onClick={() => !isDemoRunning && goTab(m)}
               sx={{
                 px: `${tokens.spacing[12]}px`,
                 height: 30,

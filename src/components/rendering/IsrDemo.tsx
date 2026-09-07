@@ -88,7 +88,8 @@ export default function IsrDemo() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, []);
+    // saveMetrics 는 zustand 셀렉터로 참조가 안정적이므로 마운트 1회 실행이 유지된다
+  }, [saveMetrics]);
 
   // "페이지 방문" 시뮬레이션 - stale이면 백그라운드 재검증 트리거
   const simulateRequest = () => {
