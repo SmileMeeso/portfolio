@@ -704,6 +704,9 @@ export default function ImageFilterPage() {
           <EmptyChartState t={t} />
         )}
       </Box>
+
+      {/* 기술 노트 */}
+      <TechNotes t={t} />
     </Box>
   );
 }
@@ -1104,6 +1107,448 @@ function BenchmarkBar({
           {ms.toFixed(3)}ms
         </Typography>
       )}
+    </Box>
+  );
+}
+
+//  기술 노트
+
+/** 픽셀당 연산량 기준으로 정리한 필터별 WASM 우위 경향 */
+const FILTER_NOTES: {
+  label: string;
+  cost: string;
+  tendency: string;
+  level: "high" | "mid" | "low";
+}[] = [
+  {
+    label: "언샤프 마스크",
+    cost: "블러 1회 + 원본 합성 · 픽셀당 연산 최다",
+    tendency: "WASM 우위 큼",
+    level: "high",
+  },
+  {
+    label: "블러 (15×15)",
+    cost: "분리형 슬라이딩 윈도우 · 인덱스 계산 비중 큼",
+    tendency: "WASM 우위 큼",
+    level: "high",
+  },
+  {
+    label: "픽셀화",
+    cost: "블록 평균 · 1패스지만 블록당 누적 연산",
+    tendency: "WASM 우위 중간",
+    level: "mid",
+  },
+  {
+    label: "그레이스케일 · 반전 · 세피아 · 밝기",
+    cost: "픽셀당 산술 2~4회 · 1패스 O(N)",
+    tendency: "격차 작음 (메모리 대역폭 지배)",
+    level: "low",
+  },
+  {
+    label: "엣지 감지 (Sobel)",
+    cost: "3×3 고정 커널 · 2패스 · 루프가 단순",
+    tendency: "격차 작거나 역전",
+    level: "low",
+  },
+];
+
+function TechNotes({ t }: { t: TokensColor }) {
+  const levelColor: Record<string, string> = {
+    high: t.accentGreen,
+    mid: t.accentBlue,
+    low: t.accentOrange,
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: `${tokens.spacing[16]}px`,
+      }}
+    >
+      <Box>
+        <Typography
+          component="h2"
+          sx={{
+            fontSize: tokens.fontSize["2xl"],
+            fontWeight: 600,
+            color: t.textPrimary,
+          }}
+        >
+          기술 노트
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: tokens.fontSize.sm,
+            color: t.textSecondary,
+            mt: "4px",
+          }}
+        >
+          이 벤치마크가 무엇을 측정하고 무엇을 측정하지 않는지, 그리고 구현에서
+          선택한 근사와 그 한계를 정리했습니다.
+        </Typography>
+      </Box>
+
+      {/* 노트 1 — 측정 방법 */}
+      <NoteCard title="1. 무엇을 측정하고, 무엇을 측정하지 않는가" t={t}>
+        <NoteSubtitle text="측정 범위" color={t.accentBlue} t={t} />
+        <NoteList
+          t={t}
+          items={[
+            "두 엔진 모두 각자의 전용 Web Worker에서 실행합니다. 메인 스레드의 렌더링·레이아웃 비용이 계측에 섞이지 않습니다.",
+            "`performance.now()`로 필터 연산 구간만 계측합니다. WASM 쪽은 픽셀을 linear memory로 복사하는 구간과 결과를 꺼내는 `slice()` 구간이 모두 계측 밖에 있어, 순수 커널 실행 시간만 남습니다.",
+            "기본 이미지는 4000×3000 = 1,200만 픽셀, RGBA 48MB입니다. 워커로 넘길 때 ArrayBuffer를 transfer해 복사 비용 없이 소유권만 이전합니다.",
+          ]}
+        />
+
+        <NoteSubtitle
+          text="측정에서 빠진 것 — 숫자를 읽을 때 감안할 점"
+          color={t.accentOrange}
+          t={t}
+        />
+        <NoteList
+          t={t}
+          items={[
+            "WASM 워커는 초기화 시 `warmup()`으로 48MB 버퍼와 gray 스크래치 버퍼를 미리 확보하고 모든 필터를 한 번씩 실행합니다. cold start와 `memory.grow`를 페이지 진입 시점으로 옮겨 둔 것입니다. JS 쪽에는 대응하는 워밍업이 없어 첫 실행에는 V8 티어업 비용이 포함됩니다. 같은 필터를 두세 번 실행한 뒤의 값을 비교하는 편이 정확합니다.",
+            "WASM 필터는 전부 in-place로 정적 버퍼를 재사용하지만, JS 필터는 함수 안에서 결과 배열을 매번 새로 할당합니다. 즉 48MB 할당 비용이 JS 계측 구간 안에 들어 있습니다. 격차의 일부는 연산 속도가 아니라 할당 회피에서 나옵니다.",
+            "단일 실행값이며 N회 중앙값이 아닙니다. GC 타이밍이나 다른 탭의 부하에 따라 편차가 생깁니다.",
+          ]}
+        />
+      </NoteCard>
+
+      {/* 노트 2 — 필터별 우위 */}
+      <NoteCard title="2. 필터별로 WASM 우위가 갈리는 이유" t={t}>
+        <Typography
+          sx={{
+            fontSize: tokens.fontSize.base,
+            color: t.textSecondary,
+            lineHeight: 1.8,
+          }}
+        >
+          모든 필터가 같은 비율로 빨라지지 않습니다. 갈리는 기준은 언어가 아니라
+          <strong> 픽셀당 연산량</strong>입니다. 픽셀당 산술이 몇 번뿐이면
+          병목이 연산이 아니라 48MB를 훑는 메모리 대역폭으로 옮겨가고, 이때는
+          어떤 언어로 써도 비슷한 시간이 나옵니다.
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: `${tokens.spacing[8]}px`,
+          }}
+        >
+          {FILTER_NOTES.map((f) => (
+            <Box
+              key={f.label}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: `${tokens.spacing[12]}px`,
+                flexWrap: "wrap",
+                bgcolor: t.bgSurface,
+                border: `1px solid ${t.borderLight}`,
+                borderRadius: `${tokens.radius.sm}px`,
+                px: `${tokens.spacing[12]}px`,
+                py: `${tokens.spacing[10]}px`,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: 600,
+                  color: t.textPrimary,
+                  minWidth: 200,
+                }}
+              >
+                {f.label}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: tokens.fontSize.sm,
+                  color: t.textSecondary,
+                  flex: 1,
+                  minWidth: 220,
+                }}
+              >
+                {f.cost}
+              </Typography>
+              <Box
+                sx={{
+                  bgcolor: `${levelColor[f.level]}18`,
+                  borderRadius: `${tokens.radius.xs}px`,
+                  px: "8px",
+                  py: "3px",
+                  flexShrink: 0,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: 700,
+                    color: levelColor[f.level],
+                  }}
+                >
+                  {f.tendency}
+                </Typography>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+
+        <Callout
+          text="WASM은 'JavaScript보다 빠른 언어'가 아니라, 픽셀당 연산량이 큰 커널에서만 이득이 나는 도구입니다. 도입 판단은 취향이 아니라 이 측정으로 해야 합니다."
+          color={t.accentBlue}
+          t={t}
+        />
+      </NoteCard>
+
+      {/* 노트 3 — 맨해튼 거리 */}
+      <NoteCard title="3. 엣지 감지에서 sqrt 대신 맨해튼 거리를 쓴 이유" t={t}>
+        <Typography
+          sx={{
+            fontSize: tokens.fontSize.base,
+            color: t.textSecondary,
+            lineHeight: 1.8,
+          }}
+        >
+          Sobel 그래디언트 크기의 교과서 정의는 유클리드 거리(L2)입니다. 이
+          구현은 두 엔진 모두 맨해튼 거리(L1) 근사를 사용합니다.
+        </Typography>
+
+        <Formula
+          t={t}
+          lines={[
+            "// 교과서 정의 (L2)",
+            "mag = sqrt(Gx * Gx + Gy * Gy)",
+            "",
+            "// 이 구현 (L1 근사) — JS · Rust 동일",
+            "mag = min(255, |Gx| + |Gy|)",
+          ]}
+        />
+
+        <NoteSubtitle text="선택한 이유" color={t.accentGreen} t={t} />
+        <NoteList
+          t={t}
+          items={[
+            "정수 파이프라인이 끊기지 않습니다. gray 버퍼는 `Int32Array` / `Vec<i32>`이고 Gx·Gy도 i32입니다. sqrt를 쓰면 픽셀마다 i32 → 부동소수 → sqrt → i32 왕복 변환이 생깁니다. sqrt 자체는 V8과 WASM 모두 하드웨어 명령 하나로 내려가므로, 실제 비용은 sqrt가 아니라 1,200만 번의 형변환 왕복입니다.",
+            "벤치마크가 공정해집니다. 두 구현이 완전히 같은 수식을 쓰기 때문에, 측정된 차이가 `Math.sqrt`와 WASM `f64.sqrt`의 코드젠 차이가 아니라 루프 구조와 메모리 접근 패턴의 차이로 좁혀집니다. 비교하려는 대상만 남기는 것이 목적이었습니다.",
+            "출력 품질 손실이 작습니다. L1은 항상 L2 이상이고 최대 √2배(약 41%)까지 커집니다. 오차가 0인 곳은 순수 수평·수직 엣지, 최대인 곳은 45° 대각 엣지입니다. 결과값은 255로 clamp되어 화면 휘도로만 쓰이므로 강한 엣지는 어느 쪽이든 포화되고, 실제로 보이는 차이는 대각선 윤곽이 조금 더 밝게 나오는 정도입니다.",
+          ]}
+        />
+
+        <NoteSubtitle
+          text="이 근사를 쓰면 안 되는 경우"
+          color={t.accentRed}
+          t={t}
+        />
+        <Typography
+          sx={{
+            fontSize: tokens.fontSize.base,
+            color: t.textSecondary,
+            lineHeight: 1.8,
+          }}
+        >
+          그래디언트 크기를 화면에 그리는 것이 아니라 후속 연산의 입력으로 쓸
+          때는 L2로 돌려야 합니다. Canny의 non-maximum suppression, 임계값 기반
+          엣지 판정, 그래디언트 방향과 함께 쓰는 특징점 추출처럼 값의 절대 크기가
+          판단 기준이 되는 경우, 엣지 방향에 따라 최대 41%까지 편향되는 값은
+          결과를 왜곡합니다. 여기서는 최종 출력이 시각화라는 점이 확실했기 때문에
+          근사를 선택했습니다.
+        </Typography>
+      </NoteCard>
+    </Box>
+  );
+}
+
+function NoteCard({
+  title,
+  children,
+  t,
+}: {
+  title: string;
+  children: React.ReactNode;
+  t: TokensColor;
+}) {
+  return (
+    <Box
+      sx={{
+        bgcolor: t.bgPrimary,
+        border: `1.5px solid ${t.borderDefault}`,
+        borderRadius: `${tokens.radius.lg}px`,
+        p: `${tokens.spacing[32]}px`,
+        display: "flex",
+        flexDirection: "column",
+        gap: `${tokens.spacing[16]}px`,
+      }}
+    >
+      <Typography
+        component="h3"
+        sx={{
+          fontSize: tokens.fontSize.lg,
+          fontWeight: 700,
+          color: t.textPrimary,
+        }}
+      >
+        {title}
+      </Typography>
+      {children}
+    </Box>
+  );
+}
+
+function NoteSubtitle({
+  text,
+  color,
+  t,
+}: {
+  text: string;
+  color: string;
+  t: TokensColor;
+}) {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: `${tokens.spacing[8]}px`,
+      }}
+    >
+      <Box sx={{ width: 3, height: 14, bgcolor: color, borderRadius: 2 }} />
+      <Typography
+        sx={{
+          fontSize: tokens.fontSize.sm,
+          fontWeight: 700,
+          color: t.textPrimary,
+        }}
+      >
+        {text}
+      </Typography>
+    </Box>
+  );
+}
+
+/** 백틱으로 감싼 구간을 인라인 코드로 렌더링 */
+function renderInlineCode(text: string, t: TokensColor) {
+  return text.split(/(`[^`]+`)/g).map((part, i) =>
+    part.startsWith("`") && part.endsWith("`") ? (
+      <Box
+        key={i}
+        component="code"
+        sx={{
+          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+          fontSize: tokens.fontSize.sm,
+          bgcolor: t.bgSurface,
+          border: `1px solid ${t.borderLight}`,
+          borderRadius: `${tokens.radius.xs}px`,
+          px: "5px",
+          py: "1px",
+          color: t.textPrimary,
+        }}
+      >
+        {part.slice(1, -1)}
+      </Box>
+    ) : (
+      part
+    ),
+  );
+}
+
+function NoteList({ items, t }: { items: string[]; t: TokensColor }) {
+  return (
+    <Box
+      component="ul"
+      sx={{
+        m: 0,
+        pl: `${tokens.spacing[20]}px`,
+        display: "flex",
+        flexDirection: "column",
+        gap: `${tokens.spacing[10]}px`,
+      }}
+    >
+      {items.map((item) => (
+        <Box
+          component="li"
+          key={item}
+          sx={{
+            fontSize: tokens.fontSize.base,
+            color: t.textSecondary,
+            lineHeight: 1.8,
+            "&::marker": { color: t.textTertiary },
+          }}
+        >
+          {renderInlineCode(item, t)}
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
+function Formula({ lines, t }: { lines: string[]; t: TokensColor }) {
+  return (
+    <Box
+      component="pre"
+      sx={{
+        m: 0,
+        bgcolor: t.bgSurface,
+        border: `1px solid ${t.borderDefault}`,
+        borderRadius: `${tokens.radius.sm}px`,
+        p: `${tokens.spacing[16]}px`,
+        overflowX: "auto",
+        fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+        fontSize: tokens.fontSize.sm,
+        lineHeight: 1.9,
+      }}
+    >
+      {lines.map((line, i) => (
+        <Box
+          key={i}
+          component="span"
+          sx={{
+            display: "block",
+            color: line.startsWith("//") ? t.textTertiary : t.textPrimary,
+            minHeight: line === "" ? "0.9em" : undefined,
+          }}
+        >
+          {line}
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
+function Callout({
+  text,
+  color,
+  t,
+}: {
+  text: string;
+  color: string;
+  t: TokensColor;
+}) {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        gap: `${tokens.spacing[10]}px`,
+        bgcolor: `${color}14`,
+        borderLeft: `3px solid ${color}`,
+        borderRadius: `${tokens.radius.sm}px`,
+        px: `${tokens.spacing[16]}px`,
+        py: `${tokens.spacing[12]}px`,
+      }}
+    >
+      <Typography
+        sx={{
+          fontSize: tokens.fontSize.base,
+          color: t.textPrimary,
+          lineHeight: 1.8,
+          fontWeight: 500,
+        }}
+      >
+        {text}
+      </Typography>
     </Box>
   );
 }

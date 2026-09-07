@@ -42,6 +42,12 @@ const frameworkSkills = [
   "Express.js",
   "FastAPI",
 ];
+const aiSkills = [
+  "Claude Code",
+  "CLAUDE.md",
+  "Subagents",
+  "Custom Commands",
+];
 const serverSkills = ["Linux (Ubuntu, CentOS)"];
 const toolingSkills = ["Storybook", "Webpack", "Vite"];
 const devOpsSkills = ["GitHub Actions", "Docker", "k8s"];
@@ -106,6 +112,7 @@ const companies: Company[] = [
           "위치 기반 경로 시각화 기능을 안정적으로 설계·납품하며 다수의 풀필먼트 고객사 확보에 직접 기여했습니다.",
         ],
         contributions: [
+          "직접 디자인 시스템을 설계하고 디자이너가 피그마 변경사항을 커밋 가능하도록 하는 구조 추가",
           "기존 정리되지 않은 컴포넌트 구조의 문제를 분석하고, 모노레포, Storybook 기반 디자인 시스템 도입을 제안·적용하여 컴포넌트를 체계화",
           "테스트 자동화 체계가 없는 상황을 파악하고 E2E·유닛 테스트를 직접 설계·도입해 QA 시간을 대폭 단축",
           "정리된 개발 환경을 기반으로 위치 기반 경로 시각화 서비스를 설계·구현",
@@ -120,6 +127,30 @@ const companies: Company[] = [
           "Playwright",
         ],
         screenshots: [
+          {
+            src: "/images/projects/omelet_figma.png",
+            caption:
+              "디자인 시스템을 사용해 산출된 컴포넌트를 피그마 컴포넌트로 생성",
+          },
+          {
+            src: "/images/projects/omelet_figma_components.png",
+            caption:
+              "디자인 시스템을 사용해 산출된 컴포넌트를 피그마 컴포넌트로 생성",
+          },
+          {
+            src: "/images/projects/omelet_figma_design-tokens.png",
+            caption:
+              "디자이너가 git에 직접 디자인 관련 변수 커밋 가능하도록 플러그인 사용",
+          },
+          {
+            src: "/images/projects/omelet_storybook.png",
+            caption: "Storybook으로 기존 컴포넌트 정리 및 디자인 시스템 적용",
+          },
+          {
+            src: "/images/projects/omelet_storybook2.png",
+            caption: "Storybook으로 기존 컴포넌트 정리 및 디자인 시스템 적용2",
+          },
+
           {
             src: "/images/projects/omelet_tms.png",
             caption:
@@ -139,17 +170,10 @@ const companies: Company[] = [
             caption: "물류 최적화 서비스 - 주문 관리 화면",
           },
           {
-            src: "/images/projects/tms_job_list.png",
-            caption: "물류 최적화 서비스 - 작업 목록 화면",
-          },
-          {
             src: "/images/projects/omelet_vuln.png",
             caption: "프론트 보안 이슈 알림",
           },
-          {
-            src: "/images/projects/omelet_storybook.png",
-            caption: "Storybook으로 기존 컴포넌트 정리 및 디자인 시스템 적용",
-          },
+
           {
             src: "/images/projects/omelet_unit_test.png",
             caption: "유닛 테스트 자동화 - QA 시간 대폭 단축",
@@ -159,6 +183,37 @@ const companies: Company[] = [
             caption: "E2E 테스트 자동화 - 주요 사용자 플로우 전체 커버",
           },
           { src: "/images/projects/tms_vuln.png", caption: "취약점 분석 화면" },
+        ],
+      },
+      {
+        period: "2025.10 ~ 현재",
+        title: "AI 하네스 엔지니어링 — 팀 개발 워크플로 표준화",
+        description:
+          "Claude Code를 개인 생산성 도구가 아닌 팀 인프라로 다루기 위해, 컨텍스트 규칙 문서와 작업별 전용 서브에이전트·커스텀 커맨드를 설계해 팀 표준으로 정착시켰습니다. BE 2명·FE 1명 총 3인 팀 전체가 동일한 하네스를 공유합니다.",
+        problem: [
+          "팀원마다 AI 코딩 도구를 쓰는 방식이 달라 같은 요청에도 산출물의 구조와 컨벤션이 갈리고, 리뷰에서 스타일 지적이 반복됐습니다.",
+          "프로젝트의 아키텍처·컨벤션·금지사항이 사람의 머릿속에만 있어 세션마다 같은 맥락을 다시 설명해야 했고, 설명이 빠지면 디자인 시스템을 우회하는 코드가 생성됐습니다.",
+          "코드리뷰·테스트 작성·Storybook 스토리 생성처럼 판단 기준이 이미 정해진 반복 작업이 매번 즉흥적인 프롬프트로 처리되고 있었습니다.",
+        ],
+        impact: [
+          "AI 산출물이 팀 컨벤션과 디자인 시스템을 따르도록 통제되어, 리뷰가 스타일 지적 대신 설계 논의에 쓰이기 시작했습니다.",
+          "프로젝트 규칙이 개인의 기억이 아니라 저장소에서 버전 관리되는 문서로 관리되기 시작했습니다.",
+          "Storybook 디자인 시스템·테스트 자동화에 이어 AI 워크플로까지 팀 표준으로 정착시켜, 도구를 도입한 것이 아니라 체계를 설계해 개발 문화를 개선했습니다.",
+        ],
+        contributions: [
+          "팀원별로 AI 산출물 품질이 갈리는 원인을 프롬프트 실력이 아닌 컨텍스트 부재로 진단하고, 아키텍처·코드 컨벤션·디자인 시스템 사용 규칙·금지사항을 컨텍스트 규칙 문서로 명문화",
+          "규칙 문서를 코드와 같은 저장소에서 버전 관리해, 코드 변경과 규칙 변경이 동일한 리뷰 절차를 거치는 구조 설계",
+          "코드리뷰·테스트 작성·Storybook 스토리 생성 등 판단 기준이 반복되는 작업을 작업별 전용 서브에이전트와 커스텀 커맨드로 분리해 표준화",
+          "서브에이전트마다 역할과 참조 범위를 좁게 정의해, 하나의 에이전트가 과도한 컨텍스트를 들고 판단 품질이 흔들리는 문제를 방지",
+          "하네스의 사용법과 한계를 팀에 공유하고 피드백을 받아 규칙과 커맨드를 반복 개선",
+        ],
+        techStack: [
+          "Claude Code",
+          "CLAUDE.md",
+          "Subagents",
+          "Custom Commands",
+          "TypeScript",
+          "Storybook",
         ],
       },
     ],
@@ -200,9 +255,7 @@ const companies: Company[] = [
           "유닛 테스트 도입으로 배포당 수동 QA 2~3일 → 1일 이내로 단축했습니다.",
           "SK 그룹사 전체에 배포되는 라이브러리의 품질 기준을 정의하고 테스트 체계를 수립했습니다.",
         ],
-        contributions: [
-          "디자인 시스템 유지보수 및 유닛 테스트 체계 설계·구현",
-        ],
+        contributions: ["디자인 시스템 유지보수 및 유닛 테스트 체계 설계·구현"],
         techStack: ["TypeScript", "Storybook", "Ant Design"],
       },
       {
@@ -269,8 +322,7 @@ const companies: Company[] = [
           },
           {
             src: "/images/projects/nanumsa_argocd.png",
-            caption:
-              "GitHub Actions 완료 후 ArgoCD에서 자동 sync",
+            caption: "GitHub Actions 완료 후 ArgoCD에서 자동 sync",
           },
         ],
       },
@@ -1586,7 +1638,7 @@ export default function HomePage() {
 웅진씽크빅 재직 당시, 낮은 사양의 패드에서 앱이 점점 느려지는 현상을 발견하고 스스로 크롬 DevTools 메모리 프로파일링을 수행해 누수 원인을 특정·제거했습니다. 그 결과 아이패드 버전 런칭 후 완판이라는 성과로 이어졌습니다. 요기요(위대한상상)에서는 수만 개의 가맹점 마커 렌더링 병목을 먼저 분석하고 Leaflet 마커 클러스터링 도입을 제안·적용해 해결했으며, 영업팀의 반복 요청 패턴을 파악해 Drag & Drop 커스텀 대시보드를 선제적으로 기획·개발하여 개발팀 요청 건수를 절반으로 줄였습니다.
 
 필요한 개발 문화를 직접 제안하고 정착시킵니다.
-팀에 Storybook이 없던 환경에서 도입 필요성을 판단하고 직접 제안·구축했으며, GitHub Actions + ArgoCD 기반 CI/CD 파이프라인 역시 스스로 설계해 여러 프로젝트에 정착시켰습니다. Storybook 도입을 통해 모듈화와 문서화를 동시에 확보했고, 신규 개발자 온보딩 시간 단축과 팀 간 협업 비용 절감이라는 실질적 효과를 이끌어 냈습니다. SK 하이닉스 프리랜서 프로젝트에서는 그룹사 전체에 배포되는 디자인 시스템에 테스트 자동화 체계가 부재한 점을 파악하고 직접 설계·구축했습니다.
+팀에 Storybook이 없던 환경에서 도입 필요성을 판단하고 직접 제안·구축했으며, GitHub Actions + ArgoCD 기반 CI/CD 파이프라인 역시 스스로 설계해 여러 프로젝트에 정착시켰습니다. Storybook 도입을 통해 모듈화와 문서화를 동시에 확보했고, 신규 개발자 온보딩 시간 단축과 팀 간 협업 비용 절감이라는 실질적 효과를 이끌어 냈습니다. SK 하이닉스 프리랜서 프로젝트에서는 그룹사 전체에 배포되는 디자인 시스템에 테스트 자동화 체계가 부재한 점을 파악하고 직접 설계·구축했습니다. 최근에는 팀원마다 AI 코딩 도구를 쓰는 방식이 달라 산출물 품질이 흔들리는 문제를 프롬프트 실력이 아닌 컨텍스트 부재로 진단하고, Claude Code의 컨텍스트 규칙 문서와 작업별 전용 서브에이전트·커스텀 커맨드를 설계해 3인 팀의 표준 하네스로 정착시켰습니다.
 
 더 나은 방향이 보이면 먼저 제안하고, 틀리면 빠르게 인정합니다.
 기술적 판단이 틀렸을 때 빠르게 인정하고 방향을 수정하는 것이 팀의 속도를 높인다고 믿습니다. 문제를 발견하면 먼저 원인을 분석해 동료에게 공유하고, 해결 방향을 함께 논의하는 것을 선호합니다.
@@ -1615,6 +1667,7 @@ export default function HomePage() {
                 skills: frameworkSkills,
                 color: "#9333EA",
               },
+              { category: "AI Tooling", skills: aiSkills, color: "#DB2777" },
               { category: "Server", skills: serverSkills, color: "#2563EB" },
               { category: "Tooling", skills: toolingSkills, color: "#0891B2" },
               { category: "DevOps", skills: devOpsSkills, color: "#16A34A" },
