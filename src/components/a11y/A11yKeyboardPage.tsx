@@ -76,6 +76,7 @@ function SectionCard({
       }}
     >
       <Typography
+        component="h2"
         sx={{
           fontSize: tokens.fontSize.xl,
           fontWeight: 700,
@@ -160,6 +161,7 @@ export default function A11yKeyboardPage() {
         >
           <A11yBadge t={t} />
           <Typography
+            component="h1"
             sx={{
               fontSize: tokens.fontSize["3xl"],
               fontWeight: 700,

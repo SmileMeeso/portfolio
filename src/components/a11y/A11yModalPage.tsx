@@ -35,7 +35,7 @@ function SectionCard({ title, children, t }: { title: string; children: React.Re
       p: '28px',
       display: 'flex', flexDirection: 'column', gap: `${tokens.spacing[20]}px`,
     }}>
-      <Typography sx={{ fontSize: tokens.fontSize.xl, fontWeight: 700, color: t.textPrimary }}>{title}</Typography>
+      <Typography component="h2" sx={{ fontSize: tokens.fontSize.xl, fontWeight: 700, color: t.textPrimary }}>{title}</Typography>
       {children}
     </Box>
   )
@@ -164,7 +164,7 @@ export default function A11yModalPage() {
           width: '100%', maxWidth: 1280,
         }}>
           <A11yBadge t={t} />
-          <Typography sx={{ fontSize: tokens.fontSize['3xl'], fontWeight: 700, color: t.textPrimary }}>
+          <Typography component="h1" sx={{ fontSize: tokens.fontSize['3xl'], fontWeight: 700, color: t.textPrimary }}>
             모달 접근성
           </Typography>
           <Typography sx={{ fontSize: tokens.fontSize.md, color: t.textSecondary, textAlign: 'center', maxWidth: 600 }}>
