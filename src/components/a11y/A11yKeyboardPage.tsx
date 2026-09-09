@@ -60,6 +60,8 @@ function SectionCard({
   return (
     <Box
       tabIndex={tabFocusable ? 0 : undefined}
+      role={tabFocusable ? "region" : undefined}
+      aria-label={tabFocusable ? title : undefined}
       sx={{
         width: "100%",
         maxWidth: 1280,
@@ -243,6 +245,7 @@ export default function A11yKeyboardPage() {
                 <Box
                   role="link"
                   tabIndex={-1}
+                  aria-label="본문 콘텐츠로 건너뛰기"
                   onClick={handleSkipLink}
                   onKeyDown={handleSkipLink}
                   sx={{
@@ -271,6 +274,8 @@ export default function A11yKeyboardPage() {
                 ref={mainContentRef}
                 id="main-content"
                 tabIndex={0}
+                role="region"
+                aria-label="본문 콘텐츠"
                 sx={{
                   outline: "none",
                   cursor: "default",
@@ -330,6 +335,7 @@ export default function A11yKeyboardPage() {
               >
                 <Box
                   tabIndex={0}
+                  aria-label={`탭 순서 ${i + 1}단계: ${step}`}
                   sx={{
                     ...focusRing,
                     display: "flex",
@@ -432,6 +438,7 @@ export default function A11yKeyboardPage() {
                 {/* 버튼은 시각적 데모 (tabIndex=-1) - 각자의 포커스 스타일을 정적으로 표현 */}
                 <Box
                   tabIndex={-1}
+                  aria-hidden="true"
                   sx={{
                     bgcolor: t.accentPurple,
                     borderRadius: `${tokens.radius.sm}px`,
@@ -458,6 +465,8 @@ export default function A11yKeyboardPage() {
         {/* 하단 정보 박스 - 탭 순서 8번 */}
         <Box
           tabIndex={0}
+          role="note"
+          aria-label="키보드 내비게이션 요약"
           sx={{
             ...focusRing,
             width: "100%",
