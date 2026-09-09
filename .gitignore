@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# 스크린샷 변환 산출물 — 원본은 assets-src/screenshots/ 에 있고
-# scripts/optimize-screenshots.sh 로 재생성한다
+# 스크린샷 원본과 변환 산출물 — 둘 다 저장소에 두지 않는다.
+# 원본을 assets-src/screenshots/ 에 놓고 scripts/optimize-screenshots.sh 를 실행하면
+# public/images/projects/{thumb,large}/ 가 생성된다.
+assets-src/
 public/images/projects/thumb/
 public/images/projects/large/
