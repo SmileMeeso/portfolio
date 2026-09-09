@@ -6,14 +6,20 @@
 #     -> public/images/projects/thumb/*.webp   높이 480  = 갤러리 표시 높이 240 의 2배
 #     -> public/images/projects/large/*.webp   가로 1920 = 라이트박스 전체화면용
 #
-# public/ 이하 산출물은 .gitignore 대상이다. 새 스크린샷을 추가하거나
-# 저장소를 새로 클론한 뒤에는 이 스크립트를 한 번 실행해야 빌드에 이미지가 들어간다.
+# 변환 결과(WebP)는 저장소에 커밋되므로 클론 직후 바로 빌드된다.
+# 이 스크립트는 스크린샷을 추가하거나 크기·품질을 바꿀 때만 실행하면 되고,
+# 원본 PNG 는 저장소에 없으므로 백업에서 assets-src/screenshots/ 로 복사해 두어야 한다.
 #
 # 사용법:
 #   ./scripts/optimize-screenshots.sh           변경된 것만 변환
 #   ./scripts/optimize-screenshots.sh --force   전체 재변환
 #
 # 필요 도구: cwebp  (brew install webp)
+#
+# 참고 — 데모 영상은 별도로 아래 명령으로 변환했다 (brew install ffmpeg):
+#   ffmpeg -i assets-src/video/tms_dnd.mov -vf scale=1920:-2 \
+#          -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p \
+#          -movflags +faststart -an public/images/projects/tms_dnd.mp4
 
 set -euo pipefail
 

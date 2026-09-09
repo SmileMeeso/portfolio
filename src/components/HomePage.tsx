@@ -261,7 +261,7 @@ const companies: Company[] = [
             src: "/images/projects/omelet_tms.png",
             caption:
               "물류 최적화 서비스 - 경로 시각화 및 파라미터 기반 최적 루트 탐색 화면",
-            videoSrc: "/images/projects/tms_dnd.mov",
+            videoSrc: "/images/projects/tms_dnd.mp4",
           },
           {
             src: "/images/projects/tms_job_list.png",
