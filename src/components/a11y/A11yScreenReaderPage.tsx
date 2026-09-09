@@ -82,49 +82,58 @@ export default function A11yScreenReaderPage() {
   const t = theme.palette.tokens.color;
 
   const beforeItems = [
-    "레이블 없이 placeholder만 사용",
+    "라벨처럼 보이는 텍스트를 input과 연결하지 않음",
     "fieldset/legend 없이 라디오 버튼 나열",
     "필수 항목을 빨간 * 색상으로만 표시",
     "에러 메시지를 빨간 텍스트로만 표시",
   ];
 
   const afterItems = [
-    "label과 aria-describedby로 입력 필드 연결",
+    "label htmlFor로 입력 필드 연결, 에러 시 aria-invalid",
     "fieldset + legend로 라디오 버튼 그룹화",
     "필수 항목에 '(필수)' 텍스트 태그 추가",
-    "에러에 triangle-alert 아이콘 + aria-live 적용",
+    "에러에 아이콘 병행, role=\"alert\" 영역을 항상 렌더링",
   ];
 
   const codeComparisons = [
     {
       title:
-        "1. label 연결 — placeholder만으로는 스크린 리더가 필드를 설명할 수 없음",
-      before: `<!--  label 없이 placeholder만 사용 -->
+        "1. label 연결 — 라벨처럼 보여도 연결되지 않으면 필드 이름이 없는 것과 같음",
+      before: `{/* 라벨처럼 보이지만 input과 연결되지 않은 텍스트 */}
+<p>이름 <span style={{ color: "red" }}>*</span></p>
 <input
   type="text"
   placeholder="이름을 입력하세요"
 />`,
-      after: `<!--  label + aria-describedby로 연결 -->
-<label htmlFor="name">
-  이름 <span>(필수)</span>
+      after: `{/* htmlFor로 연결하고, 에러가 난 필드에만 설명을 붙인다 */}
+<label htmlFor="sr-name">
+  이름
+  <span aria-hidden="true"> *</span>
+  <span className="sr-only">(필수)</span>
 </label>
 <input
-  id="name"
+  id="sr-name"
   type="text"
-  aria-describedby="name-error"
+  required
   aria-required="true"
+  aria-invalid={nameInvalid}
+  aria-describedby={nameInvalid ? "sr-form-status" : undefined}
 />`,
     },
     {
       title: "2. fieldset / legend — 라디오 그룹이 무슨 질문인지 알 수 없음",
-      before: `<!--  그룹 맥락 없이 라디오 버튼 나열 -->
+      before: `{/* 그룹 맥락 없이 라디오 버튼 나열 */}
 <div>
   <input type="radio" name="gender" /> 남성
   <input type="radio" name="gender" /> 여성
 </div>`,
-      after: `<!--  fieldset + legend로 그룹 의미 전달 -->
+      after: `{/* fieldset + legend로 그룹 의미 전달, label로 각 항목 연결 */}
 <fieldset>
-  <legend>성별 <span>(필수)</span></legend>
+  <legend>
+    성별
+    <span aria-hidden="true"> *</span>
+    <span className="sr-only">(필수)</span>
+  </legend>
   <input type="radio" id="male" name="gender" />
   <label htmlFor="male">남성</label>
   <input type="radio" id="female" name="gender" />
@@ -134,11 +143,13 @@ export default function A11yScreenReaderPage() {
     {
       title:
         "3. 필수 표시 — 빨간 * 색상만으로는 색맹·스크린 리더 사용자가 인지 불가",
-      before: `<!--  색상(빨간 *)으로만 필수 표시 -->
+      before: `{/* 색상(빨간 *)으로만 필수 표시 */}
 <label>
-  이름 <span style="color: red">*</span>
+  이름 <span style={{ color: "red" }}>*</span>
 </label>`,
-      after: `<!--  시각 기호 + 스크린 리더용 텍스트 병행 -->
+      after: `{/* 시각 기호는 감추고, 낭독용 텍스트를 따로 둔다.
+    sr-only는 화면에서만 감추고 접근성 트리에는 남기는 CSS다.
+    display:none을 쓰면 스크린 리더에서도 사라진다. */}
 <label>
   이름
   <span aria-hidden="true"> *</span>
@@ -147,18 +158,21 @@ export default function A11yScreenReaderPage() {
     },
     {
       title:
-        "4. 에러 안내 — 빨간 텍스트만으로는 스크린 리더가 자동으로 읽지 않음",
-      before: `<!--  시각적 색상만으로 에러 표시 -->
-<p style="color: red">
-  이름을 입력해주세요
-</p>`,
-      after: `<!--  aria-live로 에러 즉시 낭독, input에 연결 -->
+        "4. 에러 안내 — 라이브 영역을 조건부로 mount하면 스크린 리더가 읽지 않음",
+      before: `{/* 에러가 생길 때 요소를 새로 만든다.
+    라이브 영역도 아니라 화면에만 보이고 낭독되지 않는다. */}
+{error && (
+  <p style={{ color: "red" }}>{error}</p>
+)}`,
+      after: `{/* 컨테이너는 항상 렌더링하고 안의 텍스트만 교체한다.
+    role="alert"가 aria-live="assertive"를 포함하므로 따로 쓰지 않는다.
+    minHeight로 자리를 잡아 메시지가 떠도 레이아웃이 흔들리지 않는다. */}
 <p
-  id="name-error"
+  id="sr-form-status"
   role="alert"
-  aria-live="assertive"
+  style={{ minHeight: 20 }}
 >
-  ⚠ 이름을 입력해주세요
+  {error && <><WarningIcon /> {error}</>}
 </p>`,
     },
   ];
@@ -407,6 +421,10 @@ export default function A11yScreenReaderPage() {
                       borderRadius: `${tokens.radius.md}px`,
                       overflow: "hidden",
                       border: `1px solid ${t.accentRed}40`,
+                      // 두 카드는 flex row 에서 같은 높이로 늘어난다.
+                      // 내부를 세로 flex 로 만들어 <pre> 가 남은 높이를 채우게 한다.
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
                     <Box
@@ -436,6 +454,7 @@ export default function A11yScreenReaderPage() {
                       component="pre"
                       sx={{
                         m: 0,
+                        flex: 1,
                         p: "16px",
                         bgcolor: t.bgSurface,
                         fontFamily: "'Fira Code', 'Consolas', monospace",
@@ -456,6 +475,10 @@ export default function A11yScreenReaderPage() {
                       borderRadius: `${tokens.radius.md}px`,
                       overflow: "hidden",
                       border: `1px solid ${t.accentGreen}40`,
+                      // 두 카드는 flex row 에서 같은 높이로 늘어난다.
+                      // 내부를 세로 flex 로 만들어 <pre> 가 남은 높이를 채우게 한다.
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
                     <Box
@@ -485,6 +508,7 @@ export default function A11yScreenReaderPage() {
                       component="pre"
                       sx={{
                         m: 0,
+                        flex: 1,
                         p: "16px",
                         bgcolor: t.bgSurface,
                         fontFamily: "'Fira Code', 'Consolas', monospace",
