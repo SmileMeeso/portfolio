@@ -891,6 +891,15 @@ function SectionCard({
   );
 }
 
+/**
+ * 원본 스크린샷 경로 → 용도별 WebP 경로.
+ * 원본 PNG는 public/images/projects/ 에 그대로 두고,
+ * 갤러리는 thumb/(높이 480 = 표시 240의 2배), 라이트박스는 large/(가로 1920)를 쓴다.
+ * .png 가 아니면 원본 경로를 그대로 반환한다.
+ */
+const screenshotSrc = (src: string, size: "thumb" | "large") =>
+  src.replace(/\/([^/]+)\.png$/, `/${size}/$1.webp`);
+
 function ScreenshotGallery({
   screenshots,
   t,
@@ -996,8 +1005,9 @@ function ScreenshotGallery({
                   }}
                 >
                   <img
-                    src={shot.src}
+                    src={screenshotSrc(shot.src, "thumb")}
                     alt={shot.caption}
+                    loading="lazy"
                     style={{
                       display: "block",
                       height: 240,
@@ -1123,7 +1133,7 @@ function ScreenshotGallery({
             >
               {lightboxIndex !== null && (
                 <img
-                  src={screenshots[lightboxIndex].src}
+                  src={screenshotSrc(screenshots[lightboxIndex].src, "large")}
                   alt={screenshots[lightboxIndex].caption}
                   style={{
                     display: "block",
