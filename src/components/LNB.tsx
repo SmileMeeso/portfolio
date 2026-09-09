@@ -4,7 +4,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import ImageIcon from "@mui/icons-material/Image";
 import TuneIcon from "@mui/icons-material/Tune";
-import LayersIcon from "@mui/icons-material/Layers";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -145,23 +144,6 @@ export default function LNB({ open, onClose }: LNBProps) {
             label="미니 캐드"
             active={currentPath === "/cad"}
             onClick={() => handleNavigate("/cad")}
-            t={t}
-          />
-
-          {/* 렌더링 전략 */}
-          <NavGroup
-            icon={<LayersIcon sx={{ fontSize: 20 }} />}
-            label="렌더링 전략"
-            basePath="/rendering"
-            to="/rendering"
-            items={[
-              { label: "SSG", to: "/rendering/ssg" },
-              { label: "SSR", to: "/rendering/ssr" },
-              { label: "ISR", to: "/rendering/isr" },
-            ]}
-            currentPath={currentPath}
-            isPathActive={isPathActive}
-            onNavigate={handleNavigate}
             t={t}
           />
 

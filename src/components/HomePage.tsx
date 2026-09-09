@@ -2193,14 +2193,6 @@ export default function HomePage() {
               color: "#2563EB",
             },
             {
-              to: "/rendering",
-              title: "렌더링 전략 비교 — SSG · SSR · ISR",
-              desc: "동일 콘텐츠를 SSG, SSR, ISR 세 가지 방식으로 렌더링하고 각각의 빌드 타임·응답 시간·캐시 동작을 직접 비교합니다.",
-              relation:
-                "Next.js 기반 프로젝트(요기요 YoDa·I.Log.Yo, 나눔사)에서 SSR/SSG 선택 기준을 직접 판단한 경험, SK AX에서 불필요한 SSR을 제거한 의사결정의 근거를 보여줍니다.",
-              color: "#16A34A",
-            },
-            {
               to: "/a11y",
               title: "웹 접근성 — 키보드·스크린리더·모달",
               desc: "키보드 내비게이션, 스크린리더 폼, 모달 포커스 트랩 등 WCAG 기준의 접근성 패턴을 구현합니다.",

@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RenderingRouteImport } from './routes/rendering'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ImageOptimizeRouteImport } from './routes/image-optimize'
@@ -17,19 +16,10 @@ import { Route as ImageFilterRouteImport } from './routes/image-filter'
 import { Route as CadRouteImport } from './routes/cad'
 import { Route as A11yRouteImport } from './routes/a11y'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as RenderingIndexRouteImport } from './routes/rendering/index'
-import { Route as RenderingSsrRouteImport } from './routes/rendering/ssr'
-import { Route as RenderingSsgRouteImport } from './routes/rendering/ssg'
-import { Route as RenderingIsrRouteImport } from './routes/rendering/isr'
 import { Route as A11yScreenReaderRouteImport } from './routes/a11y/screen-reader'
 import { Route as A11yModalRouteImport } from './routes/a11y/modal'
 import { Route as A11yKeyboardRouteImport } from './routes/a11y/keyboard'
 
-const RenderingRoute = RenderingRouteImport.update({
-  id: '/rendering',
-  path: '/rendering',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -65,26 +55,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RenderingIndexRoute = RenderingIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => RenderingRoute,
-} as any)
-const RenderingSsrRoute = RenderingSsrRouteImport.update({
-  id: '/ssr',
-  path: '/ssr',
-  getParentRoute: () => RenderingRoute,
-} as any)
-const RenderingSsgRoute = RenderingSsgRouteImport.update({
-  id: '/ssg',
-  path: '/ssg',
-  getParentRoute: () => RenderingRoute,
-} as any)
-const RenderingIsrRoute = RenderingIsrRouteImport.update({
-  id: '/isr',
-  path: '/isr',
-  getParentRoute: () => RenderingRoute,
-} as any)
 const A11yScreenReaderRoute = A11yScreenReaderRouteImport.update({
   id: '/screen-reader',
   path: '/screen-reader',
@@ -109,14 +79,9 @@ export interface FileRoutesByFullPath {
   '/image-optimize': typeof ImageOptimizeRoute
   '/profile': typeof ProfileRoute
   '/projects': typeof ProjectsRoute
-  '/rendering': typeof RenderingRouteWithChildren
   '/a11y/keyboard': typeof A11yKeyboardRoute
   '/a11y/modal': typeof A11yModalRoute
   '/a11y/screen-reader': typeof A11yScreenReaderRoute
-  '/rendering/isr': typeof RenderingIsrRoute
-  '/rendering/ssg': typeof RenderingSsgRoute
-  '/rendering/ssr': typeof RenderingSsrRoute
-  '/rendering/': typeof RenderingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -129,10 +94,6 @@ export interface FileRoutesByTo {
   '/a11y/keyboard': typeof A11yKeyboardRoute
   '/a11y/modal': typeof A11yModalRoute
   '/a11y/screen-reader': typeof A11yScreenReaderRoute
-  '/rendering/isr': typeof RenderingIsrRoute
-  '/rendering/ssg': typeof RenderingSsgRoute
-  '/rendering/ssr': typeof RenderingSsrRoute
-  '/rendering': typeof RenderingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,14 +104,9 @@ export interface FileRoutesById {
   '/image-optimize': typeof ImageOptimizeRoute
   '/profile': typeof ProfileRoute
   '/projects': typeof ProjectsRoute
-  '/rendering': typeof RenderingRouteWithChildren
   '/a11y/keyboard': typeof A11yKeyboardRoute
   '/a11y/modal': typeof A11yModalRoute
   '/a11y/screen-reader': typeof A11yScreenReaderRoute
-  '/rendering/isr': typeof RenderingIsrRoute
-  '/rendering/ssg': typeof RenderingSsgRoute
-  '/rendering/ssr': typeof RenderingSsrRoute
-  '/rendering/': typeof RenderingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -162,14 +118,9 @@ export interface FileRouteTypes {
     | '/image-optimize'
     | '/profile'
     | '/projects'
-    | '/rendering'
     | '/a11y/keyboard'
     | '/a11y/modal'
     | '/a11y/screen-reader'
-    | '/rendering/isr'
-    | '/rendering/ssg'
-    | '/rendering/ssr'
-    | '/rendering/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -182,10 +133,6 @@ export interface FileRouteTypes {
     | '/a11y/keyboard'
     | '/a11y/modal'
     | '/a11y/screen-reader'
-    | '/rendering/isr'
-    | '/rendering/ssg'
-    | '/rendering/ssr'
-    | '/rendering'
   id:
     | '__root__'
     | '/'
@@ -195,14 +142,9 @@ export interface FileRouteTypes {
     | '/image-optimize'
     | '/profile'
     | '/projects'
-    | '/rendering'
     | '/a11y/keyboard'
     | '/a11y/modal'
     | '/a11y/screen-reader'
-    | '/rendering/isr'
-    | '/rendering/ssg'
-    | '/rendering/ssr'
-    | '/rendering/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -213,18 +155,10 @@ export interface RootRouteChildren {
   ImageOptimizeRoute: typeof ImageOptimizeRoute
   ProfileRoute: typeof ProfileRoute
   ProjectsRoute: typeof ProjectsRoute
-  RenderingRoute: typeof RenderingRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/rendering': {
-      id: '/rendering'
-      path: '/rendering'
-      fullPath: '/rendering'
-      preLoaderRoute: typeof RenderingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/projects': {
       id: '/projects'
       path: '/projects'
@@ -274,34 +208,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/rendering/': {
-      id: '/rendering/'
-      path: '/'
-      fullPath: '/rendering/'
-      preLoaderRoute: typeof RenderingIndexRouteImport
-      parentRoute: typeof RenderingRoute
-    }
-    '/rendering/ssr': {
-      id: '/rendering/ssr'
-      path: '/ssr'
-      fullPath: '/rendering/ssr'
-      preLoaderRoute: typeof RenderingSsrRouteImport
-      parentRoute: typeof RenderingRoute
-    }
-    '/rendering/ssg': {
-      id: '/rendering/ssg'
-      path: '/ssg'
-      fullPath: '/rendering/ssg'
-      preLoaderRoute: typeof RenderingSsgRouteImport
-      parentRoute: typeof RenderingRoute
-    }
-    '/rendering/isr': {
-      id: '/rendering/isr'
-      path: '/isr'
-      fullPath: '/rendering/isr'
-      preLoaderRoute: typeof RenderingIsrRouteImport
-      parentRoute: typeof RenderingRoute
-    }
     '/a11y/screen-reader': {
       id: '/a11y/screen-reader'
       path: '/screen-reader'
@@ -340,24 +246,6 @@ const A11yRouteChildren: A11yRouteChildren = {
 
 const A11yRouteWithChildren = A11yRoute._addFileChildren(A11yRouteChildren)
 
-interface RenderingRouteChildren {
-  RenderingIsrRoute: typeof RenderingIsrRoute
-  RenderingSsgRoute: typeof RenderingSsgRoute
-  RenderingSsrRoute: typeof RenderingSsrRoute
-  RenderingIndexRoute: typeof RenderingIndexRoute
-}
-
-const RenderingRouteChildren: RenderingRouteChildren = {
-  RenderingIsrRoute: RenderingIsrRoute,
-  RenderingSsgRoute: RenderingSsgRoute,
-  RenderingSsrRoute: RenderingSsrRoute,
-  RenderingIndexRoute: RenderingIndexRoute,
-}
-
-const RenderingRouteWithChildren = RenderingRoute._addFileChildren(
-  RenderingRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   A11yRoute: A11yRouteWithChildren,
@@ -366,7 +254,6 @@ const rootRouteChildren: RootRouteChildren = {
   ImageOptimizeRoute: ImageOptimizeRoute,
   ProfileRoute: ProfileRoute,
   ProjectsRoute: ProjectsRoute,
-  RenderingRoute: RenderingRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
