@@ -329,6 +329,9 @@ function PartsTab({
                         if (e.key === "Enter") commitEdit();
                       }}
                       size="small"
+                      // 더블클릭으로 편집을 연 직후라 포커스가 입력창으로 가는 것이 옳다.
+                      // 규칙이 막으려는 것은 페이지 로드 시점의 autoFocus 다.
+                      // eslint-disable-next-line jsx-a11y/no-autofocus
                       autoFocus
                       onClick={(e) => e.stopPropagation()}
                       sx={{

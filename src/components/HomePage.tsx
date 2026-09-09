@@ -913,6 +913,7 @@ function ScreenshotGallery({
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [videoOpen, setVideoOpen] = useState(false);
   const [videoSrc, setVideoSrc] = useState<string>("");
+  const [videoTitle, setVideoTitle] = useState<string>("");
 
   const close = () => setLightboxIndex(null);
   const prev = useCallback(
@@ -941,9 +942,10 @@ function ScreenshotGallery({
     return () => window.removeEventListener("keydown", handler);
   }, [lightboxIndex, prev, next]);
 
-  const openVideo = (src: string, e: React.MouseEvent) => {
+  const openVideo = (src: string, caption: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setVideoSrc(src);
+    setVideoTitle(caption);
     setVideoOpen(true);
   };
 
@@ -1023,7 +1025,7 @@ function ScreenshotGallery({
                 </Box>
                 {shot.videoSrc && (
                   <Box
-                    onClick={(e) => openVideo(shot.videoSrc!, e)}
+                    onClick={(e) => openVideo(shot.videoSrc!, shot.caption, e)}
                     sx={{
                       position: "absolute",
                       top: 8,
@@ -1203,6 +1205,7 @@ function ScreenshotGallery({
       <VideoPlayerModal
         open={videoOpen}
         src={videoSrc}
+        title={videoTitle}
         onClose={() => setVideoOpen(false)}
       />
     </>

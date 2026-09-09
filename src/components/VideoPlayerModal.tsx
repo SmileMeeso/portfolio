@@ -16,10 +16,13 @@ function fmt(sec: number) {
 export default function VideoPlayerModal({
   open,
   src,
+  title,
   onClose,
 }: {
   open: boolean;
   src: string;
+  /** 영상의 접근 가능한 이름. 오디오가 없는 화면 녹화라 자막 대신 이 설명이 대안 역할을 한다 */
+  title?: string;
   onClose: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -169,9 +172,13 @@ export default function VideoPlayerModal({
           }}
         >
           {open && (
+            // 오디오 트랙이 없는 화면 녹화라 자막 대상 자체가 없다.
+            // 시각 정보의 대안은 aria-label 로 제공한다 (WCAG 1.2.1 video-only)
+            // eslint-disable-next-line jsx-a11y/media-has-caption
             <video
               ref={videoRef}
               src={src}
+              aria-label={title}
               autoPlay
               onClick={togglePlay}
               onLoadedMetadata={() => {
