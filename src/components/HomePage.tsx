@@ -47,21 +47,10 @@ const frameworkSkills = [
   "Express.js",
   "FastAPI",
 ];
-const aiSkills = [
-  "Claude Code",
-  "CLAUDE.md",
-  "Subagents",
-  "Custom Commands",
-];
+const aiSkills = ["Claude Code", "CLAUDE.md", "Subagents", "Custom Commands"];
 const serverSkills = ["Node.js", "Linux (Ubuntu, CentOS)", "Firebase"];
 const toolingSkills = ["Storybook", "Webpack", "Vite"];
-const devOpsSkills = [
-  "GitHub Actions",
-  "Docker",
-  "k8s",
-  "ArgoCD",
-  "AWS EC2",
-];
+const devOpsSkills = ["GitHub Actions", "Docker", "k8s", "ArgoCD", "AWS EC2"];
 const dbSkills = ["PostgreSQL", "MySQL"];
 const etcSkills = ["Git", "GitHub", "JIRA", "Slack"];
 
@@ -136,7 +125,7 @@ const coreCompetencies: {
   },
   {
     title: "다음 사람이 이어받을 수 있는 상태로 넘깁니다",
-    body: "테스트와 문서가 없어 배포마다 수동 QA에 며칠이 드는 상황을 파악해 E2E·유닛 테스트 체계를 직접 설계·도입했고, Storybook으로 모듈화와 문서화를 함께 확보했습니다. 내가 없어도 굴러가는 상태를 만드는 것까지가 일의 끝이라고 봅니다.",
+    body: "테스트와 문서가 없어 배포마다 수동 QA에 며칠이 드는 상황을 파악해 E2E·유닛 테스트 체계를 직접 설계·도입했고, Storybook으로 모듈화와 문서화를 함께 확보했습니다. 제가 없어도 굴러가는 상태를 만드는 것까지가 일의 끝이라고 봅니다.",
     evidence:
       "SK 하이닉스 — 배포당 수동 QA 2~3일에서 1일 이내로 단축 · I.Log.Yo — 안정화 후 다른 FE 개발자에게 인수인계 완료",
     color: "#EA580C",
@@ -247,7 +236,7 @@ const companies: Company[] = [
           {
             src: "/images/projects/omelet_figma.png",
             caption:
-              "디자인 시스템을 사용해 산출된 컴포넌트를 피그마 컴포넌트로 생성",
+              "3개 프로젝트에서 사용할 디자인 시스템의 figma 문서 작업 + FE 코드를 설계함",
           },
           {
             src: "/images/projects/omelet_figma_components.png",
