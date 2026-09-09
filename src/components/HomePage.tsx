@@ -7,6 +7,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import GroupIcon from "@mui/icons-material/Group";
 import SchoolIcon from "@mui/icons-material/School";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -1690,6 +1691,44 @@ export default function HomePage() {
           >
             {`Frontend Developer · 총 ${careerDuration} 경력`}
           </Typography>
+
+          {/* 이 사이트의 소스. 코드로 검증할 수단을 먼저 열어둔다 */}
+          <Box
+            component="a"
+            href="https://github.com/SmileMeeso/portfolio"
+            target="_blank"
+            rel="noreferrer"
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              px: "12px",
+              py: "6px",
+              borderRadius: `${tokens.radius.full}px`,
+              border: `1px solid ${t.borderDefault}`,
+              bgcolor: t.bgPrimary,
+              color: t.textSecondary,
+              textDecoration: "none",
+              transition: "color 0.15s, border-color 0.15s",
+              outline: "none",
+              "&:hover": {
+                color: t.textPrimary,
+                borderColor: t.textTertiary,
+              },
+              "&:focus-visible": {
+                outline: "3px solid #FBBF24",
+                outlineOffset: "2px",
+              },
+            }}
+          >
+            <GitHubIcon sx={{ fontSize: 16 }} />
+            <Typography
+              component="span"
+              sx={{ fontSize: tokens.fontSize.sm, fontWeight: 500 }}
+            >
+              github.com/SmileMeeso/portfolio
+            </Typography>
+          </Box>
         </Box>
 
         {/*  연락처  */}
