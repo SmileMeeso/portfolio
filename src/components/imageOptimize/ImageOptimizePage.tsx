@@ -7,8 +7,10 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { tokens, type TokensColor } from "../../theme/theme";
 
 // 같은 seed ➞ 동일한 사진, 다른 해상도로 비교
-const BEFORE_URL = "https://picsum.photos/seed/imgopt/1920/1080";
-const AFTER_URL = "https://picsum.photos/seed/imgopt/828/466";
+// 이 사이트의 실제 스크린샷 한 쌍.
+// before 는 비교용으로만 남겨둔 원본이고, after 는 갤러리가 지금 서빙하는 파일이다.
+const BEFORE_URL = "/images/optimize-demo/original.png";
+const AFTER_URL = "/images/projects/thumb/omelet_storybook.webp";
 
 const ACCENT = tokens.color.accentPurple;
 const ACCENT_LIGHT = tokens.color.accentPurpleLight;
@@ -25,46 +27,79 @@ interface ImageResult {
 
 type Status = "idle" | "loading" | "done";
 
+/** 이 사이트를 실제로 최적화하며 적용한 것들 */
 const FEATURES = [
   {
     icon: "📐",
-    title: "자동 리사이즈",
-    desc: "뷰포트·디바이스에 맞게 이미지를 자동 리사이즈합니다. 1920px 원본을 모바일에서는 828px로 줄여 불필요한 데이터 전송을 없앱니다.",
+    title: "표시 크기에 맞춘 두 벌 변환",
+    desc: "5074px 원본을 240px 높이로 그리고 있었습니다. 갤러리용 480px, 라이트박스용 1920px 두 벌을 미리 만들어 용도에 맞는 쪽만 내려보냅니다.",
   },
   {
     icon: "🗜️",
-    title: "WebP / AVIF 변환",
-    desc: "브라우저 지원 여부를 감지해 JPEG·PNG를 자동으로 WebP 또는 AVIF로 변환합니다. JPEG 대비 평균 25–50% 용량을 절감합니다.",
+    title: "WebP · 영상 재인코딩",
+    desc: "글자가 많은 스크린샷이라 cwebp -sharp_yuv 로 가장자리 번짐을 억제했습니다. 오디오가 없는 46MB .mov 는 H.264 MP4 로 다시 인코딩했습니다.",
   },
   {
     icon: "⚡",
-    title: "Lazy Load + priority",
-    desc: "뷰포트 밖 이미지는 지연 로딩하고, priority prop을 설정한 LCP 이미지는 <link rel=preload>로 우선 로드해 LCP를 개선합니다.",
+    title: "lazy 로딩 · 라우트 코드 스플리팅",
+    desc: "가로 스크롤 갤러리는 화면에 걸치는 것만 받습니다. three.js 696KB 는 미니 CAD 에 들어갈 때만 내려옵니다.",
   },
   {
-    icon: "🖼️",
-    title: "Blur Placeholder",
-    desc: "이미지 로드 전 블러 미리보기를 표시해 레이아웃 이동(CLS)을 방지합니다. placeholder='blur' + blurDataURL 조합으로 사용합니다.",
+    icon: "🧹",
+    title: "빌드 산출물에서 원본 분리",
+    desc: "Vite 는 public/ 을 통째로 복사합니다. 참조되지 않는 원본 PNG 32MB 가 매 배포에 실리고 있어 저장소 밖으로 옮겼습니다.",
   },
 ];
 
-const CODE_EXAMPLE = `// Before - 일반 <img>
-<img src="/hero.jpg" alt="Hero" />
-// ➞ 원본 1920×1080 JPEG 그대로 전송, 포맷 변환 없음
+/** 실측값 — 이 사이트를 최적화하기 전과 후 */
+const SITE_RESULTS = [
+  {
+    label: "스크린샷 36장",
+    before: 32.1,
+    after: 4.5,
+    unit: "MB",
+    note: "WebP 두 벌 (썸네일 1.0 + 라이트박스 3.5)",
+  },
+  {
+    label: "데모 영상",
+    before: 46.1,
+    after: 2.16,
+    unit: "MB",
+    note: ".mov → H.264 MP4 (CRF 20, faststart)",
+  },
+  {
+    label: "홈 진입 JS",
+    before: 1322,
+    after: 494,
+    unit: "KB",
+    note: "라우트 코드 스플리팅 · gzip 384 → 160 KB",
+  },
+  {
+    label: "빌드 산출물 (dist)",
+    before: 87,
+    after: 9.9,
+    unit: "MB",
+    note: "위 세 가지 + 미참조 원본 제외",
+  },
+];
 
-// After - Next.js <Image>
-import Image from 'next/image'
+const CODE_EXAMPLE = `# 스크린샷 — 표시 크기에 맞춰 두 벌로 변환
+# -sharp_yuv 는 글자 가장자리 색 번짐을 줄여준다 (스크린샷에 특히 유효)
+cwebp -q 82 -m 6 -sharp_yuv -resize 0 480  src.png -o thumb/src.webp
+cwebp -q 88 -m 6 -sharp_yuv -resize 1920 0 src.png -o large/src.webp
 
-<Image
-  src="/hero.jpg"
-  alt="Hero"
-  width={828}
-  height={466}
-  priority            // LCP 이미지 ➞ <link rel="preload">
-  placeholder="blur"  // CLS 방지
-  blurDataURL="..."
-/>
-// ➞ 자동 WebP·AVIF 변환 + 리사이즈 + CDN 캐싱`;
+# 데모 영상 — 오디오 없는 3434×1820 / 23Mbps .mov
+ffmpeg -i demo.mov -vf scale=1920:-2 -c:v libx264 -preset slow -crf 20 \\
+       -pix_fmt yuv420p -movflags +faststart -an demo.mp4
+
+// 갤러리는 썸네일, 라이트박스는 큰 쪽을 쓴다
+const screenshotSrc = (src, size) =>
+  src.replace(/\\/([^/]+)\\.png$/, \`/\${size}/$1.webp\`)
+
+<img src={screenshotSrc(shot.src, "thumb")} loading="lazy" />
+
+// 라우트 단위 코드 스플리팅 — three.js 는 /cad 에서만 내려온다
+TanStackRouterVite({ autoCodeSplitting: true })`;
 
 //  메인 페이지
 
@@ -159,7 +194,7 @@ export default function ImageOptimizePage() {
             textAlign: "center",
           }}
         >
-          Next Image로 성능 최적화하기
+          이 사이트를 87MB에서 9.9MB로
         </Typography>
         <Typography
           sx={{
@@ -169,10 +204,12 @@ export default function ImageOptimizePage() {
             maxWidth: 560,
           }}
         >
-          원본 이미지와 최적화된 이미지를 직접 fetch해 파일 크기와 로드 시간을
-          실측합니다.
+          일반론이 아니라 이 포트폴리오를 실제로 최적화한 기록입니다. 아래
+          비교는 지금 브라우저에서 직접 fetch 해 측정합니다.
         </Typography>
       </Box>
+
+      <SiteResults t={t} />
 
       {/* Before / After 비교 카드 */}
       <Box
@@ -261,20 +298,20 @@ export default function ImageOptimizePage() {
           <ImageCard
             label="BEFORE"
             title="원본 이미지"
-            subtitle="1920 × 1080 · JPEG (최적화 없음)"
+            subtitle="5052 × 2494 · PNG (원본 그대로)"
             desc="포맷 변환·리사이즈 없이 원본 해상도로 직접 서빙합니다."
             result={before}
             status={status}
             accentColor={RED}
             bgColor={RED_LIGHT}
-            dimension="1920 × 1080"
+            dimension="5052 × 2494"
             t={t}
           />
           <ImageCard
             label="AFTER"
             title="최적화 이미지"
-            subtitle="828 × 466 · WebP* (Next.js Image)"
-            desc="리사이즈 + WebP 변환 + 지연 로딩으로 용량과 LCP를 개선합니다."
+            subtitle="973 × 480 · WebP (갤러리가 쓰는 파일)"
+            desc="표시 높이 240px의 2배로 리사이즈하고 cwebp -sharp_yuv 로 변환했습니다. 98% 줄었는데도 Storybook 사이드바의 컴포넌트 이름까지 읽힙니다."
             result={after}
             status={status}
             accentColor={GREEN}
@@ -299,7 +336,7 @@ export default function ImageOptimizePage() {
         )}
       </Box>
 
-      {/* Next.js Image 최적화 기법 */}
+      {/* 적용한 기법 */}
       <Box
         sx={{
           p: "28px",
@@ -316,7 +353,7 @@ export default function ImageOptimizePage() {
             mb: `${tokens.spacing[24]}px`,
           }}
         >
-          Next.js Image가 하는 일
+          이 사이트에 적용한 것
         </Typography>
         <Box sx={{ display: "flex", gap: `${tokens.spacing[16]}px` }}>
           {FEATURES.map((f) => (
@@ -401,8 +438,11 @@ export default function ImageOptimizePage() {
             mt: "12px",
           }}
         >
-          * 이 데모는 picsum.photos의 JPEG를 사용합니다. 실제 Next.js 환경에서는
-          WebP·AVIF로 자동 변환됩니다.
+          두 파일 모두 이 사이트가 호스팅합니다. After 는 데모용으로 따로 만든
+          것이 아니라 경력 섹션의 갤러리가 실제로 내려보내는 파일이고, Before 는
+          비교를 위해 한 장만 남겨둔 원본입니다. 나머지 원본 35장은 저장소 밖에
+          있습니다. 로드 시간은 네트워크 상태에 따라 달라지며, 로컬에서는 둘 다
+          거의 0ms 로 나옵니다.
         </Typography>
       </Box>
     </Box>
@@ -422,6 +462,136 @@ interface ImageCardProps {
   bgColor: string;
   dimension: string;
   t: TokensColor;
+}
+
+/** 이 사이트의 실측 개선치 */
+function SiteResults({ t }: { t: TokensColor }) {
+  return (
+    <Box
+      sx={{
+        p: "28px",
+        bgcolor: t.bgPrimary,
+        border: `1.5px solid ${t.borderDefault}`,
+        borderRadius: `${tokens.radius.lg}px`,
+        display: "flex",
+        flexDirection: "column",
+        gap: `${tokens.spacing[20]}px`,
+      }}
+    >
+      <Box>
+        <Typography
+          component="h2"
+          sx={{
+            fontSize: tokens.fontSize["2xl"],
+            fontWeight: 600,
+            color: t.textPrimary,
+          }}
+        >
+          실측 결과
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: tokens.fontSize.sm,
+            color: t.textSecondary,
+            mt: "4px",
+          }}
+        >
+          측정 → 원인 파악 → 조치 → 재측정 순으로 진행했습니다. 막대는 개선 후
+          남은 비율입니다.
+        </Typography>
+      </Box>
+
+      {SITE_RESULTS.map((r) => {
+        const pct = Math.max((r.after / r.before) * 100, 1);
+        const cut = Math.round((1 - r.after / r.before) * 100);
+        return (
+          <Box
+            key={r.label}
+            sx={{ display: "flex", flexDirection: "column", gap: "8px" }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: `${tokens.spacing[10]}px`,
+                flexWrap: "wrap",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: 700,
+                  color: t.textPrimary,
+                  minWidth: 150,
+                }}
+              >
+                {r.label}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: tokens.fontSize.sm,
+                  color: t.textTertiary,
+                  textDecoration: "line-through",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {r.before} {r.unit}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: 700,
+                  color: GREEN,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {r.after} {r.unit}
+              </Typography>
+              <Box
+                sx={{
+                  bgcolor: GREEN_LIGHT,
+                  borderRadius: `${tokens.radius.xs}px`,
+                  px: "8px",
+                  py: "2px",
+                }}
+              >
+                <Typography
+                  sx={{ fontSize: tokens.fontSize.xs, fontWeight: 700, color: GREEN }}
+                >
+                  {cut}% 감소
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                height: 8,
+                borderRadius: 4,
+                bgcolor: t.bgSurface,
+                overflow: "hidden",
+              }}
+            >
+              <Box
+                sx={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  bgcolor: GREEN,
+                  borderRadius: 4,
+                  transition: "width 0.6s ease",
+                }}
+              />
+            </Box>
+
+            <Typography
+              sx={{ fontSize: tokens.fontSize.xs, color: t.textTertiary }}
+            >
+              {r.note}
+            </Typography>
+          </Box>
+        );
+      })}
+    </Box>
+  );
 }
 
 function ImageCard({
@@ -802,7 +972,7 @@ function ImprovementSection({
                     sx={{
                       width: `${afterPct}%`,
                       height: "100%",
-                      background: `linear-gradient(90deg, ${GREEN} 0%, ${tokens.color.accentGreenLight} 100%)`,
+                      bgcolor: GREEN,
                       borderRadius: 4,
                       transition: "width 0.8s cubic-bezier(.4,0,.2,1)",
                     }}
