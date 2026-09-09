@@ -7,6 +7,7 @@ import LabelIcon from "@mui/icons-material/Label";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import AsteriskIcon from "@mui/icons-material/Star";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import LiveFormDemo from "./LiveFormDemo";
 import { tokens } from "../../theme/theme";
 import type { TokensColor } from "../../theme/theme";
 
@@ -74,6 +75,7 @@ function SectionCard({
     </Box>
   );
 }
+
 
 export default function A11yScreenReaderPage() {
   const theme = useTheme();
@@ -370,6 +372,10 @@ export default function A11yScreenReaderPage() {
               </Box>
             </Box>
           </Box>
+        </SectionCard>
+
+        <SectionCard title="직접 확인해보기 — 실제 동작하는 폼" t={t}>
+          <LiveFormDemo t={t} />
         </SectionCard>
 
         {/* Section: 코드로 보는 차이 */}
