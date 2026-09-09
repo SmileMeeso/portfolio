@@ -243,6 +243,11 @@ export default function A11yScreenReaderPage() {
           </Typography>
         </Box>
 
+        {/* Section: 직접 확인해보기 */}
+        <SectionCard title="직접 확인해보기 — 실제 동작하는 폼" t={t}>
+          <LiveFormDemo t={t} />
+        </SectionCard>
+
         {/* Section: 접근성 없는 폼 vs 개선한 폼 */}
         <SectionCard title="접근성 없는 폼 vs 개선한 폼" t={t}>
           <Box sx={{ display: "flex", gap: `${tokens.spacing[20]}px` }}>
@@ -386,10 +391,6 @@ export default function A11yScreenReaderPage() {
               </Box>
             </Box>
           </Box>
-        </SectionCard>
-
-        <SectionCard title="직접 확인해보기 — 실제 동작하는 폼" t={t}>
-          <LiveFormDemo t={t} />
         </SectionCard>
 
         {/* Section: 코드로 보는 차이 */}
