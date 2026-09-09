@@ -8,6 +8,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import LockIcon from '@mui/icons-material/Lock'
 import KeyboardIcon from '@mui/icons-material/Keyboard'
 import CodeIcon from '@mui/icons-material/Code'
+import ModalDemo from './ModalDemo'
 import { tokens } from '../../theme/theme'
 import type { TokensColor } from '../../theme/theme'
 
@@ -171,6 +172,11 @@ export default function A11yModalPage() {
             다이얼로그가 열렸을 때 키보드와 스크린 리더 사용자를 위한 접근성 패턴을 소개합니다
           </Typography>
         </Box>
+
+        {/* Section: 직접 확인해보기 */}
+        <SectionCard title="직접 확인해보기 — 실제 동작하는 모달" t={t}>
+          <ModalDemo t={t} />
+        </SectionCard>
 
         {/* Section: 잘못된 모달 vs 올바른 모달 */}
         <SectionCard title="잘못된 모달 vs 올바른 모달" t={t}>
