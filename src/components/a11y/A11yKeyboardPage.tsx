@@ -126,14 +126,12 @@ export default function A11yKeyboardPage() {
     },
   ];
 
-  function handleSkipLink(e: React.MouseEvent | React.KeyboardEvent) {
-    if ("key" in e && e.key !== "Enter" && e.key !== " ") return;
-    e.preventDefault();
+  function handleSkipLink(e: React.MouseEvent<HTMLAnchorElement>) {
     const el = mainContentRef.current;
-    if (el) {
-      el.focus();
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+    if (!el) return; // JS 가 실패해도 href="#main-content" 로 이동은 보장된다
+    e.preventDefault();
+    el.focus();
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   return (
@@ -242,14 +240,17 @@ export default function A11yKeyboardPage() {
                 p: `${tokens.spacing[20]}px`,
               }}
             >
-              {/* Skip link 버튼 - 클릭/Enter 시 Main Content Area로 포커스 이동 */}
+              {/* Skip link - 네이티브 <a>. 포커스·Enter 활성화·링크 역할을
+                  브라우저 기본 동작에 맡기고, onClick 은 부드러운 스크롤만 더한다 */}
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Box
-                  role="link"
-                  tabIndex={0}
+                  component="a"
+                  href="#main-content"
                   onClick={handleSkipLink}
-                  onKeyDown={handleSkipLink}
                   sx={{
+                    ...focusRing,
+                    display: "inline-block",
+                    textDecoration: "none",
                     bgcolor: t.accentPurple,
                     borderRadius: `${tokens.radius.sm}px`,
                     px: `${tokens.spacing[20]}px`,
@@ -259,6 +260,7 @@ export default function A11yKeyboardPage() {
                   }}
                 >
                   <Typography
+                    component="span"
                     sx={{
                       fontSize: tokens.fontSize.sm,
                       fontWeight: 600,
