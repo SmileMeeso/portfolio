@@ -246,7 +246,7 @@ export default function A11yKeyboardPage() {
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Box
                   role="link"
-                  tabIndex={-1}
+                  tabIndex={0}
                   aria-label="본문 콘텐츠로 건너뛰기"
                   onClick={handleSkipLink}
                   onKeyDown={handleSkipLink}
