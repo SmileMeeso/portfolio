@@ -6,7 +6,6 @@ import EmailIcon from "@mui/icons-material/Email";
 import LanguageIcon from "@mui/icons-material/Language";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import GroupIcon from "@mui/icons-material/Group";
-import SchoolIcon from "@mui/icons-material/School";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -1806,10 +1805,6 @@ export default function HomePage() {
               ),
               label: "meeso-not-miso.com",
               href: "https://www.meeso-not-miso.com/",
-            },
-            {
-              icon: <SchoolIcon sx={{ fontSize: 16, color: t.accentPurple }} />,
-              label: "명지대학교 기계공학과 졸업",
             },
           ].map(({ icon, label, href }) => (
             <Box
