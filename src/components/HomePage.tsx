@@ -1614,10 +1614,42 @@ function CompanyCard({ company, t }: { company: Company; t: TokensColor }) {
 
 //  메인 홈 페이지
 
-function calcCareer(startYear: number, startMonth: number): string {
-  const now = new Date();
-  const totalMonths =
-    (now.getFullYear() - startYear) * 12 + (now.getMonth() + 1 - startMonth);
+/**
+ * 경력 요약표의 기간에서 "실제로 일한 달"의 합집합 크기를 센다.
+ *
+ * 첫 입사일부터 단순히 빼면 두 가지가 틀어진다.
+ *  - 공백기가 포함된다 (2024.11~12)
+ *  - 기간이 겹치는 달을 두 번 센다 (2018.05 는 PSR 종료월이자 커넥트닷 시작월)
+ * 개인 프로젝트(나눔사)는 재직 경력이 아니므로 제외한다.
+ */
+function calcCareerMonths(now = new Date()): number {
+  const worked = new Set<string>();
+
+  for (const { period, type } of careerSummary) {
+    if (type === "개인") continue;
+    const [from, to] = period.split("~").map((part) => part.trim());
+    const [fromYear, fromMonth] = from.split(".").map(Number);
+    // "재직중" 처럼 종료일이 없으면 이번 달까지로 본다
+    const [toYear, toMonth] = /^\d{4}\.\d{1,2}$/.test(to)
+      ? to.split(".").map(Number)
+      : [now.getFullYear(), now.getMonth() + 1];
+
+    let year = fromYear;
+    let month = fromMonth;
+    while (year * 12 + month <= toYear * 12 + toMonth) {
+      worked.add(`${year}-${month}`);
+      if (month === 12) {
+        year += 1;
+        month = 1;
+      } else {
+        month += 1;
+      }
+    }
+  }
+  return worked.size;
+}
+
+function formatCareer(totalMonths: number): string {
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
   return months > 0 ? `${years}년 ${months}개월` : `${years}년`;
@@ -1626,11 +1658,9 @@ function calcCareer(startYear: number, startMonth: number): string {
 export default function HomePage() {
   const theme = useTheme();
   const t = theme.palette.tokens.color;
-  const careerDuration = calcCareer(2017, 6);
-  const careerYears = Math.floor(
-    ((new Date().getFullYear() - 2017) * 12 + (new Date().getMonth() + 1 - 6)) /
-      12,
-  );
+  const careerMonths = calcCareerMonths();
+  const careerDuration = formatCareer(careerMonths);
+  const careerYears = Math.floor(careerMonths / 12);
 
   return (
     <Box sx={{ bgcolor: t.bgSurface, minHeight: "calc(100vh - 64px)" }}>
@@ -2143,7 +2173,7 @@ export default function HomePage() {
           <Typography
             sx={{ fontSize: tokens.fontSize.sm, color: t.textTertiary }}
           >
-            {`총 경력 ${careerDuration} · 최신순`}
+            {`총 경력 ${careerDuration} · 개인 프로젝트 제외 · 최신순`}
           </Typography>
         </Box>
 
