@@ -875,7 +875,7 @@ function SectionCard({
         bgcolor: t.bgPrimary,
         borderRadius: `${tokens.radius.lg}px`,
         border: `1.5px solid ${t.borderDefault}`,
-        p: "28px",
+        p: { xs: "18px", md: "28px" },
         display: "flex",
         flexDirection: "column",
         gap: `${tokens.spacing[20]}px`,
@@ -1517,7 +1517,7 @@ function CompanyCard({ company, t }: { company: Company; t: TokensColor }) {
       <Box sx={{ height: 4, bgcolor: color }} />
       <Box
         sx={{
-          p: "28px",
+          p: { xs: "18px", md: "28px" },
           display: "flex",
           flexDirection: "column",
           gap: `${tokens.spacing[24]}px`,
@@ -1669,9 +1669,9 @@ export default function HomePage() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: `${tokens.spacing[40]}px`,
-          px: `${tokens.spacing[80]}px`,
-          py: `${tokens.spacing[48]}px`,
+          gap: { xs: `${tokens.spacing[24]}px`, md: `${tokens.spacing[40]}px` },
+          px: { xs: `${tokens.spacing[16]}px`, sm: `${tokens.spacing[32]}px`, md: `${tokens.spacing[80]}px` },
+          py: { xs: `${tokens.spacing[32]}px`, md: `${tokens.spacing[48]}px` },
         }}
       >
         {/*  프로필 헤더  */}
@@ -1769,9 +1769,9 @@ export default function HomePage() {
             bgcolor: t.bgPrimary,
             borderRadius: `${tokens.radius.lg}px`,
             border: `1.5px solid ${t.borderDefault}`,
-            p: "28px",
+            p: { xs: "18px", md: "28px" },
             display: "flex",
-            gap: `${tokens.spacing[40]}px`,
+            gap: { xs: `${tokens.spacing[12]}px`, md: `${tokens.spacing[40]}px` },
             flexWrap: "wrap",
           }}
         >
@@ -2015,8 +2015,10 @@ export default function HomePage() {
                 key={item.period + item.company}
                 sx={{
                   display: "flex",
-                  alignItems: "center",
-                  gap: `${tokens.spacing[16]}px`,
+                  // 좁은 화면에서는 기간·회사·역할을 한 줄씩 쌓는다
+                  flexDirection: { xs: "column", md: "row" },
+                  alignItems: { xs: "flex-start", md: "center" },
+                  gap: { xs: `${tokens.spacing[4]}px`, md: `${tokens.spacing[16]}px` },
                   flexWrap: "wrap",
                   py: `${tokens.spacing[12]}px`,
                   borderBottom:
@@ -2029,7 +2031,7 @@ export default function HomePage() {
                   sx={{
                     fontSize: tokens.fontSize.sm,
                     color: t.textTertiary,
-                    width: 150,
+                    width: { xs: "auto", md: 150 },
                     flexShrink: 0,
                     fontVariantNumeric: "tabular-nums",
                   }}
@@ -2041,7 +2043,7 @@ export default function HomePage() {
                     fontSize: tokens.fontSize.base,
                     fontWeight: 600,
                     color: t.textPrimary,
-                    width: 200,
+                    width: { xs: "auto", md: 200 },
                     flexShrink: 0,
                   }}
                 >
@@ -2051,8 +2053,8 @@ export default function HomePage() {
                   sx={{
                     fontSize: tokens.fontSize.sm,
                     color: t.textSecondary,
-                    flex: 1,
-                    minWidth: 200,
+                    flex: { xs: "none", md: 1 },
+                    minWidth: { xs: 0, md: 200 },
                   }}
                 >
                   {item.role}
@@ -2243,7 +2245,8 @@ export default function HomePage() {
             width: "100%",
             maxWidth: 1280,
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
+            gridTemplateColumns:
+              "repeat(auto-fill, minmax(min(360px, 100%), 1fr))",
             gap: `${tokens.spacing[20]}px`,
           }}
         >

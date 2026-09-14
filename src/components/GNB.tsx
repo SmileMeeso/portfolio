@@ -29,7 +29,7 @@ export default function GNB({ onMenuOpen }: GNBProps) {
         alignItems: "center",
         justifyContent: "space-between",
         height: 64,
-        px: `${tokens.spacing[48]}px`,
+        px: { xs: `${tokens.spacing[16]}px`, md: `${tokens.spacing[48]}px` },
         bgcolor: t.bgPrimary,
         borderBottom: `1px solid ${t.borderDefault}`,
         flexShrink: 0,
