@@ -267,7 +267,10 @@ const companies: Company[] = [
             src: "/images/projects/omelet_storybook2.png",
             caption: "Storybook으로 기존 컴포넌트 정리 및 디자인 시스템 적용2",
           },
-
+          {
+            src: "/images/projects/omelet_datadog_rum.png",
+            caption: "Datadog을 사용해서 주요 사용자 지표 분석",
+          },
           {
             src: "/images/projects/omelet_tms.png",
             caption:
@@ -1680,7 +1683,11 @@ export default function HomePage() {
           flexDirection: "column",
           alignItems: "center",
           gap: { xs: `${tokens.spacing[24]}px`, md: `${tokens.spacing[40]}px` },
-          px: { xs: `${tokens.spacing[16]}px`, sm: `${tokens.spacing[32]}px`, md: `${tokens.spacing[80]}px` },
+          px: {
+            xs: `${tokens.spacing[16]}px`,
+            sm: `${tokens.spacing[32]}px`,
+            md: `${tokens.spacing[80]}px`,
+          },
           py: { xs: `${tokens.spacing[32]}px`, md: `${tokens.spacing[48]}px` },
         }}
       >
@@ -1781,7 +1788,10 @@ export default function HomePage() {
             border: `1.5px solid ${t.borderDefault}`,
             p: { xs: "18px", md: "28px" },
             display: "flex",
-            gap: { xs: `${tokens.spacing[12]}px`, md: `${tokens.spacing[40]}px` },
+            gap: {
+              xs: `${tokens.spacing[12]}px`,
+              md: `${tokens.spacing[40]}px`,
+            },
             flexWrap: "wrap",
           }}
         >
@@ -2028,7 +2038,10 @@ export default function HomePage() {
                   // 좁은 화면에서는 기간·회사·역할을 한 줄씩 쌓는다
                   flexDirection: { xs: "column", md: "row" },
                   alignItems: { xs: "flex-start", md: "center" },
-                  gap: { xs: `${tokens.spacing[4]}px`, md: `${tokens.spacing[16]}px` },
+                  gap: {
+                    xs: `${tokens.spacing[4]}px`,
+                    md: `${tokens.spacing[16]}px`,
+                  },
                   flexWrap: "wrap",
                   py: `${tokens.spacing[12]}px`,
                   borderBottom:
