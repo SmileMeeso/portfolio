@@ -3,6 +3,7 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { Box } from "@mui/material";
 import GNB from "../components/GNB";
 import LNB from "../components/LNB";
+import NotFoundPage from "../components/NotFoundPage";
 
 function RootLayout() {
   const [lnbOpen, setLnbOpen] = useState(false);
@@ -22,4 +23,6 @@ function RootLayout() {
 
 export const Route = createRootRoute({
   component: RootLayout,
+  // RootLayout 안에서 렌더되므로 404 에서도 GNB·LNB 로 이동할 수 있다
+  notFoundComponent: NotFoundPage,
 });
